@@ -1,0 +1,24 @@
+/* You can add global styles to this file, and also import other style files */
+
+/* Davivienda Brand Colors */
+:root {
+  --davivienda-red: #ED1C24;
+  --davivienda-dark-red: #C41E3A;
+  --davivienda-light-gray: #F5F5F5;
+  --davivienda-dark-gray: #333333;
+  --davivienda-text: #495057;
+  --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  font-family: var(--font-family);
+  background-color: var(--davivienda-light-gray);
+  color: var(--davivienda-text);
+}
