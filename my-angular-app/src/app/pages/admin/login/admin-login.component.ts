@@ -9,7 +9,12 @@ import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { AuthService } from '../../../core/services/auth.service';
 import { AppRoutes } from '../../../core/enums/app-routes.enum';
+import { LoginCredentials } from '../../../core/models/user.model';
 
+/**
+ * Componente de login para administradores.
+ * Maneja autenticación y redirección al dashboard.
+ */
 @Component({
   selector: 'app-admin-login',
   standalone: true,
@@ -25,18 +30,24 @@ import { AppRoutes } from '../../../core/enums/app-routes.enum';
   styleUrl: './admin-login.component.scss'
 })
 export class AdminLoginComponent {
-  private fb = inject(FormBuilder);
-  private authService = inject(AuthService);
-  private router = inject(Router);
-  private messageService = inject(MessageService);
+  private readonly fb = inject(FormBuilder);
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
+  private readonly messageService = inject(MessageService);
 
-  loading = signal(false);
+  /** Signal que indica si el login está en proceso */
+  readonly loading = signal(false);
 
-  loginForm = this.fb.group({
+  /** Formulario reactivo de login con validaciones */
+  readonly loginForm = this.fb.group({
     username: ['', [Validators.required, Validators.minLength(3)]],
     password: ['', [Validators.required, Validators.minLength(6)]]
   });
 
+  /**
+   * Procesa el envío del formulario de login.
+   * Valida credenciales y redirige al dashboard si es exitoso.
+   */
   async onSubmit(): Promise<void> {
     if (this.loginForm.invalid) {
       this.markFormGroupTouched();
@@ -46,7 +57,7 @@ export class AdminLoginComponent {
     this.loading.set(true);
 
     try {
-      const credentials = this.loginForm.value as any;
+      const credentials = this.loginForm.value as LoginCredentials;
       const success = await this.authService.adminLogin(credentials);
 
       if (success) {
@@ -77,6 +88,10 @@ export class AdminLoginComponent {
     }
   }
 
+  /**
+   * Marca todos los campos del formulario como tocados.
+   * Útil para mostrar errores de validación al intentar enviar.
+   */
   private markFormGroupTouched(): void {
     Object.keys(this.loginForm.controls).forEach(key => {
       const control = this.loginForm.get(key);
@@ -84,6 +99,11 @@ export class AdminLoginComponent {
     });
   }
 
+  /**
+   * Verifica si un campo es inválido y ha sido tocado.
+   * @param fieldName - Nombre del campo a validar
+   * @returns true si el campo es inválido y ha sido tocado
+   */
   isFieldInvalid(fieldName: string): boolean {
     const field = this.loginForm.get(fieldName);
     return !!(field?.invalid && field?.touched);

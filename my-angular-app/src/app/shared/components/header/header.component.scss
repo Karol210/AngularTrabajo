@@ -1,3 +1,8 @@
+/**
+ * Header Component Styles
+ * Header principal de la aplicación con logo y acciones
+ */
+
 .header {
   background-color: var(--white);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -36,21 +41,25 @@
     font-weight: 400;
   }
 
+  // Navegación con botones de acción
   &__nav {
     display: flex;
     align-items: center;
     gap: 1rem;
   }
 
+  // Botón del carrito con badge
   &__cart-button {
     position: relative;
 
+    // Ocultar badge cuando está vacío
     .cart-badge--empty {
       display: none;
     }
   }
 }
 
+/* Responsive Design */
 @media (max-width: 768px) {
   .header {
     &__container {

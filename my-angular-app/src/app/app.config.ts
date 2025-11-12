@@ -9,7 +9,10 @@ import Aura from '@primeng/themes/aura';
 
 import { routes } from './app.routes';
 
-// Tema personalizado de Davivienda basado en Aura
+/**
+ * Tema personalizado de PrimeNG basado en Aura.
+ * Usa la paleta de colores de Davivienda (rojo principal).
+ */
 const DaviviendaPreset = definePreset(Aura, {
   semantic: {
     primary: {
@@ -44,6 +47,10 @@ const DaviviendaPreset = definePreset(Aura, {
   }
 });
 
+/**
+ * Configuración principal de la aplicación Angular.
+ * Incluye providers para routing, HTTP, animaciones y PrimeNG.
+ */
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),

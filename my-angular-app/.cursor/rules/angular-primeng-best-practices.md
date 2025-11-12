@@ -421,5 +421,10 @@ export class ProductsComponent {
 
 ---
 
+**Referencias Adicionales:**
+- **Ver:** `limpieza-codigo.md` para guía completa de código limpio (readonly, tipos, JSDoc)
+- **Ver:** `espaciado-componentes.md` para Principio del Cuadrado en CSS
+- **Ver:** `documentacion-codigo.md` para estándares de documentación
+
 **Versión:** Angular 19.x | PrimeNG Latest
 

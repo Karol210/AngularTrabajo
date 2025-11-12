@@ -1,10 +1,12 @@
 import { Component, inject } from '@angular/core';
-import { Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { BadgeModule } from 'primeng/badge';
 import { CartService } from '../../../core/services/cart.service';
-import { AppRoutes } from '../../../core/enums/app-routes.enum';
 
+/**
+ * Componente del header principal de la aplicación.
+ * Contiene logo, botón de login y carrito de compras.
+ */
 @Component({
   selector: 'app-header',
   standalone: true,
@@ -13,18 +15,24 @@ import { AppRoutes } from '../../../core/enums/app-routes.enum';
   styleUrl: './header.component.scss'
 })
 export class HeaderComponent {
-  private router = inject(Router);
-  private cartService = inject(CartService);
+  private readonly cartService = inject(CartService);
 
-  cartItemsCount = this.cartService.totalItems;
+  /** Número total de items en el carrito */
+  readonly cartItemsCount = this.cartService.totalItems;
 
+  /**
+   * Navega a la página de login de usuario.
+   * @todo Implementar modal de login
+   */
   navigateToLogin(): void {
-    // Por ahora solo mostrar mensaje - implementar modal de login después
     console.log('Iniciar sesión');
   }
 
+  /**
+   * Navega a la página del carrito de compras.
+   * @todo Implementar página de carrito
+   */
   navigateToCart(): void {
-    // Navegar al carrito - implementar después
     console.log('Ver carrito');
   }
 }

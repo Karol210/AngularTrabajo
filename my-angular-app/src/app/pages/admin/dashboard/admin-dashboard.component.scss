@@ -1,4 +1,10 @@
+/**
+ * Admin Dashboard Component Styles
+ * Panel de control con estadísticas y métricas
+ */
+
 .admin-dashboard {
+  // Header del dashboard
   &__header {
     margin-bottom: 2rem;
   }
@@ -17,6 +23,7 @@
     margin: 0;
   }
 
+  // Grid responsivo de estadísticas
   &__stats {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -29,6 +36,7 @@
   }
 }
 
+/* Tarjetas de Estadísticas */
 .stat-card {
   transition: transform 0.2s, box-shadow 0.2s;
 
@@ -77,6 +85,7 @@
   }
 }
 
+/* Card Header */
 .card-header {
   padding: 1.5rem 1.5rem 0 1.5rem;
 
@@ -89,6 +98,7 @@
   }
 }
 
+/* Placeholder Content */
 .activity-content {
   display: flex;
   flex-direction: column;
@@ -104,6 +114,7 @@
   }
 }
 
+/* Responsive Design */
 @media (max-width: 768px) {
   .admin-dashboard {
     &__title {

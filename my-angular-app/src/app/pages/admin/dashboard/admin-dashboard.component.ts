@@ -1,6 +1,9 @@
 import { Component, signal } from '@angular/core';
 import { CardModule } from 'primeng/card';
 
+/**
+ * Estadística del dashboard.
+ */
 interface DashboardStat {
   title: string;
   value: string;
@@ -9,6 +12,10 @@ interface DashboardStat {
   bgColor: string;
 }
 
+/**
+ * Componente principal del dashboard administrativo.
+ * Muestra estadísticas generales del sistema.
+ */
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
@@ -17,7 +24,8 @@ interface DashboardStat {
   styleUrl: './admin-dashboard.component.scss'
 })
 export class AdminDashboardComponent {
-  stats = signal<DashboardStat[]>([
+  /** Estadísticas principales del dashboard */
+  readonly stats = signal<DashboardStat[]>([
     {
       title: 'Total Productos',
       value: '24',

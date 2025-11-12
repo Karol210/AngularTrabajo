@@ -1,24 +1,37 @@
 import { Injectable, signal } from '@angular/core';
 import { Product } from '../models/product.model';
 
+/**
+ * Servicio para gestionar productos de la tienda.
+ * Proporciona signals reactivos y métodos para consultar productos.
+ * 
+ * @todo Reemplazar mock data con llamadas HTTP reales al backend
+ */
 @Injectable({
   providedIn: 'root'
 })
 export class ProductService {
-  private productsState = signal<Product[]>([]);
-  private loadingState = signal(false);
+  private readonly productsState = signal<Product[]>([]);
+  private readonly loadingState = signal(false);
   
-  products = this.productsState.asReadonly();
-  loading = this.loadingState.asReadonly();
+  /** Signal reactivo con la lista de productos */
+  readonly products = this.productsState.asReadonly();
+  
+  /** Signal reactivo que indica si los productos están cargando */
+  readonly loading = this.loadingState.asReadonly();
 
   constructor() {
     this.loadProducts();
   }
 
-  loadProducts(): void {
+  /**
+   * Carga los productos desde el backend.
+   * Actualmente usa datos mock simulando un delay de red.
+   */
+  private loadProducts(): void {
     this.loadingState.set(true);
     
-    // Simulación de llamada HTTP - reemplazar con servicio real
+    // Simulación de llamada HTTP con delay
     setTimeout(() => {
       const mockProducts: Product[] = [
         {
@@ -68,10 +81,19 @@ export class ProductService {
     }, 1000);
   }
 
+  /**
+   * Busca un producto por su ID.
+   * @param id - ID del producto a buscar
+   * @returns Producto encontrado o undefined
+   */
   getProductById(id: string): Product | undefined {
     return this.productsState().find(p => p.id === id);
   }
 
+  /**
+   * Obtiene solo los productos destacados.
+   * @returns Array de productos con featured = true
+   */
   getFeaturedProducts(): Product[] {
     return this.productsState().filter(p => p.featured);
   }

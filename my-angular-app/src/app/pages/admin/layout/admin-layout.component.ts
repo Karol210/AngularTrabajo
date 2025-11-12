@@ -1,29 +1,33 @@
 import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { MenuModule } from 'primeng/menu';
-import { ButtonModule } from 'primeng/button';
 import { AvatarModule } from 'primeng/avatar';
 import { MenuItem } from 'primeng/api';
 import { AuthService } from '../../../core/services/auth.service';
 
+/**
+ * Layout principal del área de administración.
+ * Contiene sidebar con navegación y área de contenido.
+ */
 @Component({
   selector: 'app-admin-layout',
   standalone: true,
   imports: [
     RouterOutlet,
     MenuModule,
-    ButtonModule,
     AvatarModule
   ],
   templateUrl: './admin-layout.component.html',
   styleUrl: './admin-layout.component.scss'
 })
 export class AdminLayoutComponent {
-  private authService = inject(AuthService);
+  private readonly authService = inject(AuthService);
 
-  adminUser = this.authService.adminUser;
+  /** Usuario administrador actual */
+  readonly adminUser = this.authService.adminUser;
 
-  menuItems: MenuItem[] = [
+  /** Items del menú de navegación */
+  readonly menuItems: MenuItem[] = [
     {
       label: 'Dashboard',
       icon: 'pi pi-home',
@@ -49,6 +53,9 @@ export class AdminLayoutComponent {
     }
   ];
 
+  /**
+   * Cierra la sesión del administrador y redirige al login.
+   */
   logout(): void {
     this.authService.adminLogout();
   }

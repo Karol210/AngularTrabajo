@@ -1,8 +1,14 @@
+/**
+ * Admin Layout Component Styles
+ * Layout con sidebar fijo y área de contenido principal
+ */
+
 .admin-layout {
   display: flex;
   min-height: 100vh;
   background-color: var(--background-body);
 
+  // Sidebar fijo con navegación
   &__sidebar {
     width: 280px;
     background-color: var(--white);
@@ -35,6 +41,7 @@
     margin-top: 0.25rem;
   }
 
+  // Información del usuario logueado
   &__user {
     padding: 1.5rem;
     display: flex;
@@ -60,6 +67,7 @@
     color: var(--black-light);
   }
 
+  // Navegación principal
   &__nav {
     flex: 1;
     padding: 1rem 0;
@@ -71,6 +79,7 @@
     }
   }
 
+  // Área de contenido principal
   &__main {
     flex: 1;
     margin-left: 280px;
@@ -78,6 +87,7 @@
   }
 }
 
+/* Responsive Design */
 @media (max-width: 1024px) {
   .admin-layout {
     &__sidebar {
