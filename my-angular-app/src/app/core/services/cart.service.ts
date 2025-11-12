@@ -27,7 +27,7 @@ export class CartService {
    * Se recalcula automáticamente cuando cambia cartItems.
    */
   totalPrice = computed(() => 
-    this.cartItemsState().reduce((sum, item) => sum + (item.product.price * item.quantity), 0)
+    this.cartItemsState().reduce((sum, item) => sum + (item.product.totalPrice * item.quantity), 0)
   );
 
   constructor() {
@@ -75,7 +75,12 @@ export class CartService {
     this.saveCartToStorage();
   }
 
-  removeFromCart(productId: string): void {
+  /**
+   * Elimina un producto del carrito.
+   * 
+   * @param productId - ID del producto a eliminar
+   */
+  removeFromCart(productId: number): void {
     this.cartItemsState.update(items => items.filter(item => item.product.id !== productId));
     this.saveCartToStorage();
   }
@@ -87,7 +92,7 @@ export class CartService {
    * @param productId - ID del producto a actualizar
    * @param quantity - Nueva cantidad
    */
-  updateQuantity(productId: string, quantity: number): void {
+  updateQuantity(productId: number, quantity: number): void {
     if (quantity <= 0) {
       this.removeFromCart(productId);
       return;
@@ -103,6 +108,10 @@ export class CartService {
     this.saveCartToStorage();
   }
 
+  /**
+   * Limpia todos los productos del carrito.
+   * Elimina los datos de localStorage.
+   */
   clearCart(): void {
     this.cartItemsState.set([]);
     localStorage.removeItem(StorageKeys.CART_ITEMS);

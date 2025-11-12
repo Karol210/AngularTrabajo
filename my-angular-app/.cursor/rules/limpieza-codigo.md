@@ -117,126 +117,27 @@ import { CartService } from '../../core/services/cart.service';
 
 ## 4. Documentación JSDoc
 
-### Todos los Elementos Públicos
+**Todos** los elementos públicos deben estar documentados con JSDoc.
 
-```typescript
-/**
- * Componente principal del landing page.
- * Muestra productos destacados y permite agregarlos al carrito.
- */
-@Component({ /* ... */ })
-export class LandingComponent {
-  private readonly cartService = inject(CartService);
+**Ver:** `documentacion-codigo.md` para guía completa de documentación.
 
-  /** Signal reactivo con la lista de productos */
-  readonly products = this.productService.products;
-
-  /**
-   * Agrega un producto al carrito y muestra notificación.
-   * @param product - Producto a agregar al carrito
-   */
-  addToCart(product: Product): void {
-    // ...
-  }
-}
-```
-
-### Servicios y Guards
-
-```typescript
-/**
- * Servicio para gestionar productos de la tienda.
- * Proporciona signals reactivos y métodos para consultar productos.
- * 
- * @todo Reemplazar mock data con llamadas HTTP reales al backend
- */
-@Injectable({ providedIn: 'root' })
-export class ProductService {
-  /**
-   * Busca un producto por su ID.
-   * @param id - ID del producto a buscar
-   * @returns Producto encontrado o undefined
-   */
-  getProductById(id: string): Product | undefined {
-    return this.products().find(p => p.id === id);
-  }
-}
-
-/**
- * Guard para proteger rutas de administración.
- * Verifica que el usuario tenga una sesión de admin activa.
- * Si no está autenticado, redirige al login de admin.
- */
-export const adminAuthGuard: CanActivateFn = () => {
-  // ...
-};
-```
+**Reglas básicas:**
+- Componentes, servicios y guards siempre documentados
+- Métodos públicos con parámetros o lógica compleja
+- Propiedades solo si no es obvio por el nombre
+- Usar @todo para pendientes
+- Usar @deprecated para código obsoleto
 
 ## 5. Comentarios en SCSS
 
-### Encabezado de Archivo
+**Ver:** `documentacion-codigo.md` para guía completa de comentarios en SCSS.
 
-```scss
-/**
- * Landing Component Styles
- * Página principal con hero section y grid de productos
- */
-```
-
-### Secciones Principales
-
-```scss
-/* Hero Section */
-.hero {
-  background: linear-gradient(135deg, var(--red-main) 0%, var(--red-dark) 100%);
-}
-
-/* Products Section */
-.products {
-  padding: 3rem 2rem;
-}
-
-/* Product Card - Principio del Cuadrado */
-.product-card {
-  // ✅ CUADRADO: Contenedor principal con padding lateral
-  &__content {
-    padding: 1.5rem;
-  }
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  // ...
-}
-```
-
-### Comentarios Inline
-
-```scss
-.admin-login {
-  // ✅ CUADRADO: Contenedor principal con padding lateral único
-  &__content {
-    padding: 1.5rem;
-  }
-
-  // Header con ícono y título - solo espaciado vertical
-  &__card-header {
-    padding-top: 0.5rem;
-    padding-bottom: 1rem;
-  }
-
-  // Botón centrado con ancho mínimo
-  &__button {
-    align-self: center;
-    min-width: 200px;
-  }
-
-  // Ocultar badge cuando está vacío
-  .cart-badge--empty {
-    display: none;
-  }
-}
-```
+**Reglas básicas:**
+- Encabezado de archivo con descripción del componente
+- Comentar secciones principales
+- Indicar uso del Principio del Cuadrado
+- Comentar media queries
+- Comentar hacks o soluciones no obvias
 
 ## 6. Uso de @todo Tags
 
@@ -366,73 +267,16 @@ private debugState(): void {
 // O aplicar estilos en styles.scss global
 ```
 
-## Checklist de Limpieza
+## Reglas Clave
 
-Antes de commit, verificar:
+- Servicios inyectados: `readonly`
+- Propiedades que no cambian: `readonly`
+- No usar `any` sin justificación
+- Eliminar imports no usados
+- CommonModule solo si usas pipes
+- Código comentado debe tener explicación con @todo
+- Sin console.log en producción
+- Sin ::ng-deep (usar estilos globales)
 
-### TypeScript
-- [ ] ✅ Todos los servicios inyectados son `readonly`
-- [ ] ✅ Propiedades que no cambian son `readonly`
-- [ ] ✅ No hay uso de `any` sin justificación
-- [ ] ✅ Imports están ordenados y sin duplicados
-- [ ] ✅ No hay imports no usados
-- [ ] ✅ CommonModule solo si es necesario
-- [ ] ✅ Componentes tienen JSDoc
-- [ ] ✅ Servicios tienen JSDoc
-- [ ] ✅ Métodos públicos tienen JSDoc
-- [ ] ✅ Guards tienen JSDoc
-- [ ] ✅ Uso de @todo para pendientes
-- [ ] ✅ No hay código comentado sin explicación
-- [ ] ✅ No hay console.log en producción
-
-### SCSS
-- [ ] ✅ Archivo tiene comentario de encabezado
-- [ ] ✅ Secciones principales están comentadas
-- [ ] ✅ Principio del Cuadrado está indicado
-- [ ] ✅ No hay ::ng-deep
-- [ ] ✅ No hay clases no usadas
-- [ ] ✅ Comentarios útiles, no obvios
-- [ ] ✅ Media queries comentados
-
-### General
-- [ ] ✅ 0 errores de linter
-- [ ] ✅ 0 warnings sin justificar
-- [ ] ✅ Nombres descriptivos y en español
-- [ ] ✅ Código auto-explicativo
-
-## Herramientas
-
-### ESLint
-```bash
-# Verificar errores
-npm run lint
-
-# Arreglar automáticamente
-npm run lint -- --fix
-```
-
-### Prettier
-```bash
-# Formatear código
-npm run format
-```
-
-### VSCode Extensions Recomendadas
-- ESLint
-- Prettier
-- Angular Language Service
-- Better Comments
-
-## Beneficios
-
-1. **Mantenibilidad**: Código más fácil de entender y modificar
-2. **Performance**: Menos imports = bundles más pequeños
-3. **Type Safety**: Menos errores en runtime
-4. **Colaboración**: Equipo entiende el código rápidamente
-5. **Debugging**: Más fácil encontrar y solucionar bugs
-6. **Refactoring**: Cambios más seguros con tipos estrictos
-
----
-
-**Regla de Oro:** Si no estás seguro si algo es necesario, elimínalo. Es mejor agregar después que mantener código muerto.
+**Ver:** `documentacion-codigo.md` para JSDoc completo.
 

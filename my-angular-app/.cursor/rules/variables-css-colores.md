@@ -307,36 +307,18 @@ Las transparencias se pueden combinar con variables:
 }
 ```
 
-## Validación
+## Excepción: Transparencias
 
-Antes de hacer commit, verificar:
-- [ ] No hay valores hexadecimales (#xxx) en archivos .scss
-- [ ] No hay valores RGB/RGBA excepto para transparencias
-- [ ] No hay nombres de colores (red, blue, white, etc.) excepto `transparent`
-- [ ] Todos los colores usan `var(--xxx)`
-
-## Excepción: Transparencias Puras
-
-Únicos valores permitidos sin variables:
+Solo permitido usar valores sin variables para transparencias:
 
 ```scss
 .element {
-  background: transparent;  // ✅ Permitido
-  border-color: transparent; // ✅ Permitido
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); // ✅ Permitido (negro transparente)
+  background: transparent;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);  // Negro transparente OK
 }
 ```
 
-## Beneficios
+## Regla Crítica
 
-1. **Consistencia visual** en toda la aplicación
-2. **Cambio de tema** global modificando un solo archivo
-3. **Mantenibilidad** centralizada
-4. **Brand compliance** automático
-5. **Type safety** con autocomplete en IDEs
-
----
-
-**Fuente:** `src/styles.scss`  
-**Sistema de diseño:** Davivienda
+**NUNCA hardcodear colores. Siempre usar variables CSS del proyecto.**
 

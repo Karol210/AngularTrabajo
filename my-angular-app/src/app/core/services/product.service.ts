@@ -1,18 +1,24 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, signal, inject } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable, catchError, tap, throwError } from 'rxjs';
 import { Product } from '../models/product.model';
+import { ProductResponse } from '../models/product-response';
+import { ApiResponse } from '../models/api-response.model';
+import { StorageKeys } from '../enums/storage-keys.enum';
+import { environment } from '../../../environments/environment';
 
 /**
  * Servicio para gestionar productos de la tienda.
- * Proporciona signals reactivos y métodos para consultar productos.
- * 
- * @todo Reemplazar mock data con llamadas HTTP reales al backend
+ * Proporciona signals reactivos y métodos para consultar productos desde el backend.
  */
 @Injectable({
   providedIn: 'root'
 })
 export class ProductService {
+  private readonly http = inject(HttpClient);
   private readonly productsState = signal<Product[]>([]);
   private readonly loadingState = signal(false);
+  private readonly baseUrl = `${environment.apiUrl}/products`;
   
   /** Signal reactivo con la lista de productos */
   readonly products = this.productsState.asReadonly();
@@ -25,60 +31,80 @@ export class ProductService {
   }
 
   /**
-   * Carga los productos desde el backend.
-   * Actualmente usa datos mock simulando un delay de red.
+   * Genera los headers necesarios para las peticiones HTTP.
+   * Incluye Content-Type y Authorization si existe token en sesión.
+   * @returns HttpHeaders configurados
+   */
+  private getHeaders(): HttpHeaders {
+    let headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+
+    // Obtener el token del sessionStorage
+    const token = sessionStorage.getItem(StorageKeys.ADMIN_TOKEN);
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
+    }
+
+    return headers;
+  }
+
+  /**
+   * Mapea un ProductResponse del backend a un Product para uso interno.
+   * @param response - Respuesta del backend
+   * @returns Producto mapeado para la aplicación
+   */
+  private mapProductResponseToProduct(response: ProductResponse): Product {
+    return {
+      id: response.id,
+      name: response.name,
+      description: response.description,
+      categoryName: response.categoryName,
+      categoryDescription: response.categoryDescription,
+      unitPrice: response.unitPrice,
+      taxRate: response.taxRate,
+      taxAmount: response.taxAmount,
+      totalPrice: response.totalPrice,
+      imageUrl: response.imageUrl,
+      active: response.active
+    };
+  }
+
+  /**
+   * Carga todos los productos desde el backend.
+   * Actualiza el estado del signal con los productos obtenidos.
    */
   private loadProducts(): void {
     this.loadingState.set(true);
     
-    // Simulación de llamada HTTP con delay
-    setTimeout(() => {
-      const mockProducts: Product[] = [
-        {
-          id: '1',
-          name: 'Laptop HP Pavilion',
-          description: 'Laptop HP Pavilion 15.6" Intel Core i5 8GB RAM 512GB SSD',
-          price: 2500000,
-          imageUrl: 'https://via.placeholder.com/300x300?text=Laptop',
-          category: 'Tecnología',
-          stock: 15,
-          featured: true
-        },
-        {
-          id: '2',
-          name: 'iPhone 15 Pro',
-          description: 'iPhone 15 Pro 256GB - Titanio Azul',
-          price: 4800000,
-          imageUrl: 'https://via.placeholder.com/300x300?text=iPhone',
-          category: 'Tecnología',
-          stock: 8,
-          featured: true
-        },
-        {
-          id: '3',
-          name: 'Samsung Galaxy Watch',
-          description: 'Samsung Galaxy Watch 6 - Smartwatch con GPS',
-          price: 890000,
-          imageUrl: 'https://via.placeholder.com/300x300?text=Watch',
-          category: 'Accesorios',
-          stock: 25,
-          featured: false
-        },
-        {
-          id: '4',
-          name: 'Auriculares Sony',
-          description: 'Sony WH-1000XM5 - Cancelación de ruido',
-          price: 1200000,
-          imageUrl: 'https://via.placeholder.com/300x300?text=Headphones',
-          category: 'Audio',
-          stock: 12,
-          featured: true
-        }
-      ];
+    this.listAllProducts().subscribe({
+      next: (response) => {
+        const products = response.body.map(pr => this.mapProductResponseToProduct(pr));
+        this.productsState.set(products);
+        this.loadingState.set(false);
+      },
+      error: (error) => {
+        console.error('Error al cargar productos:', error);
+        this.productsState.set([]);
+        this.loadingState.set(false);
+      }
+    });
+  }
 
-      this.productsState.set(mockProducts);
-      this.loadingState.set(false);
-    }, 1000);
+  /**
+   * Lista todos los productos activos del backend.
+   * @returns Observable con la respuesta del backend
+   */
+  listAllProducts(): Observable<ApiResponse<ProductResponse[]>> {
+    return this.http.get<ApiResponse<ProductResponse[]>>(
+      `${this.baseUrl}/list-all`,
+      { headers: this.getHeaders() }
+    ).pipe(
+      catchError(error => {
+        console.error('Error en listAllProducts:', error);
+        return throwError(() => error);
+      })
+    );
   }
 
   /**
@@ -86,16 +112,34 @@ export class ProductService {
    * @param id - ID del producto a buscar
    * @returns Producto encontrado o undefined
    */
-  getProductById(id: string): Product | undefined {
+  getProductById(id: number): Product | undefined {
     return this.productsState().find(p => p.id === id);
   }
 
   /**
-   * Obtiene solo los productos destacados.
-   * @returns Array de productos con featured = true
+   * Busca un producto por su nombre.
+   * @param name - Nombre del producto a buscar
+   * @returns Producto encontrado o undefined
    */
-  getFeaturedProducts(): Product[] {
-    return this.productsState().filter(p => p.featured);
+  getProductByName(name: string): Product | undefined {
+    return this.productsState().find(p => p.name === name);
+  }
+
+  /**
+   * Obtiene solo los productos activos.
+   * @returns Array de productos con active = true
+   */
+  getActiveProducts(): Product[] {
+    return this.productsState().filter(p => p.active);
+  }
+
+  /**
+   * Filtra productos por categoría.
+   * @param categoryName - Nombre de la categoría
+   * @returns Array de productos de la categoría especificada
+   */
+  getProductsByCategory(categoryName: string): Product[] {
+    return this.productsState().filter(p => p.categoryName === categoryName);
   }
 }
 

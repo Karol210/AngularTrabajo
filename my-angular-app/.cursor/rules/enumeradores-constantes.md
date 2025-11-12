@@ -177,34 +177,19 @@ export const AppConstants = {
 const pageSize = AppConstants.PAGINATION.DEFAULT_PAGE_SIZE;
 ```
 
-## 6. Severidades y Colores de PrimeNG
+## 6. Severidades de PrimeNG
 
-**❌ INCORRECTO:**
-```typescript
-<p-button severity="primary" />
-<p-message severity="success" />
-```
+Cuando se usan valores de severidad múltiples veces, usar enum:
 
-**✅ CORRECTO:**
 ```typescript
-// prime-ng.enums.ts
 export enum PrimeNGSeverity {
   PRIMARY = 'primary',
-  SECONDARY = 'secondary',
   SUCCESS = 'success',
-  INFO = 'info',
-  WARNING = 'warning',
-  DANGER = 'danger',
-  HELP = 'help',
-  CONTRAST = 'contrast'
+  DANGER = 'danger'
 }
 
-// Uso en componente
+// Uso
 severity = PrimeNGSeverity.PRIMARY;
-```
-
-```html
-<p-button [severity]="severity" />
 ```
 
 ## 7. Organización de Enums y Constantes
@@ -314,20 +299,7 @@ if (response.status === HttpStatus.OK) { }
 if (error.status === HttpStatus.NOT_FOUND) { }
 ```
 
-## Beneficios
-
-1. **Mantenibilidad**: Cambiar un valor en un solo lugar
-2. **Autocomplete**: IDE sugiere valores válidos
-3. **Type Safety**: TypeScript detecta errores en tiempo de compilación
-4. **Refactoring**: Renombrar es seguro y fácil
-5. **Documentación**: Valores centralizados son auto-documentados
-6. **Búsqueda**: Encontrar uso de valores específicos es trivial
-
 ## Regla de Oro
 
 **Si un valor se usa más de una vez, o representa un concepto del dominio, debe ser un enum o constante.**
-
----
-
-**Última actualización:** Noviembre 2024
 

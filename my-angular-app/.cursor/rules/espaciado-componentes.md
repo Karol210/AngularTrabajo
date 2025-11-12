@@ -129,80 +129,7 @@ Los hijos solo deben controlar su espaciado vertical (arriba/abajo), nunca later
 }
 ```
 
-### 4. Visualización del Cuadrado
-
-**Todos los elementos deben estar dentro del "cuadrado" del padre:**
-
-```
-❌ INCORRECTO - Elementos tocando bordes:
-┌─────────────────────────────────┐
-│Título aquí                      │
-│Contenido aquí                   │
-└─────────────────────────────────┘
-
-✅ CORRECTO - Padding del cuadrado padre:
-┌─────────────────────────────────┐
-│  ┌──────────────────────────┐   │
-│  │ Título aquí             │   │
-│  │ Contenido aquí          │   │
-│  └──────────────────────────┘   │
-└─────────────────────────────────┘
-```
-
-```html
-<!-- ✅ Padre controla los bordes -->
-<div class="card">
-  <div class="card__header">
-    <i class="pi pi-shield"></i>
-    <h2>Título</h2>
-  </div>
-  <div class="card__content">
-    <p>Contenido</p>
-  </div>
-</div>
-```
-
-```scss
-.card {
-  padding: 1.5rem;  // ✅ Cuadrado con espacio lateral
-
-  &__header {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-    padding-bottom: 1rem;  // ✅ Solo espaciado vertical
-  }
-
-  &__content {
-    // Sin padding, alineado por el padre
-  }
-}
-```
-
-## Valores de Espaciado Estándar
-
-Usar sistema consistente de espaciado:
-
-```scss
-:root {
-  --spacing-xs: 0.25rem;   // 4px
-  --spacing-sm: 0.5rem;    // 8px
-  --spacing-md: 1rem;      // 16px
-  --spacing-lg: 1.5rem;    // 24px
-  --spacing-xl: 2rem;      // 32px
-  --spacing-2xl: 3rem;     // 48px
-}
-```
-
-### Uso Típico:
-
-- **Padding de tarjetas:** `1.5rem - 2rem`
-- **Gap entre elementos:** `1rem - 1.5rem`
-- **Margen entre secciones:** `2rem - 3rem`
-- **Espacio entre labels e inputs:** `0.5rem`
-
-## Ejemplo Completo - Principio del Cuadrado
+## Ejemplo - Principio del Cuadrado
 
 ```html
 <div class="login-card">
@@ -252,21 +179,6 @@ Usar sistema consistente de espaciado:
   // Sin padding, alineado por el cuadrado padre
 }
 ```
-
-**Resultado:** 
-- Ícono, título, inputs, labels → todos perfectamente alineados
-- Un solo valor de padding lateral en toda la card (1.5rem)
-- Fácil de modificar: cambiar 1 valor cambia todo
-
-## Checklist - Principio del Cuadrado
-
-- [ ] ✅ El padre es un "cuadrado" con padding lateral único
-- [ ] ✅ Los hijos NO tienen padding lateral
-- [ ] ✅ Los hijos solo usan padding vertical (top/bottom)
-- [ ] ✅ Todos los elementos internos están alineados verticalmente
-- [ ] ✅ Un solo valor de padding lateral en todo el componente
-- [ ] ✅ Uso de `gap` para separar elementos hijos
-- [ ] ✅ PrimeNG Cards con padding manual siguiendo este principio
 
 ## Regla de Oro
 

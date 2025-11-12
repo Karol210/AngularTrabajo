@@ -29,26 +29,36 @@
           @for (product of products(); track product.id) {
             <p-card class="product-card">
               <ng-template pTemplate="header">
-                <img 
-                  [src]="product.imageUrl" 
-                  [alt]="product.name"
-                  class="product-card__image" />
+                @if (product.imageUrl) {
+                  <img 
+                    [src]="product.imageUrl" 
+                    [alt]="product.name"
+                    class="product-card__image" />
+                } @else {
+                  <div class="product-card__no-image">
+                    <i class="pi pi-image" style="font-size: 3rem"></i>
+                  </div>
+                }
               </ng-template>
               
               <div class="product-card__content">
                 <h3 class="product-card__name">{{ product.name }}</h3>
+                <p class="product-card__category">{{ product.categoryName }}</p>
                 <p class="product-card__description">{{ product.description }}</p>
                 <div class="product-card__footer">
-                  <span class="product-card__price">{{ formatPrice(product.price) }}</span>
+                  <div class="product-card__prices">
+                    <span class="product-card__price">{{ formatPrice(product.totalPrice) }}</span>
+                    <span class="product-card__unit-price">Base: {{ formatPrice(product.unitPrice) }}</span>
+                  </div>
                   
-                  @if (product.stock > 0) {
+                  @if (product.active) {
                     <p-button
                       label="Agregar"
                       icon="pi pi-shopping-cart"
                       (onClick)="addToCart(product)"
                       styleClass="product-card__button" />
                   } @else {
-                    <span class="product-card__out-of-stock">Agotado</span>
+                    <span class="product-card__out-of-stock">No disponible</span>
                   }
                 </div>
               </div>

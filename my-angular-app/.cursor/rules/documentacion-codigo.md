@@ -424,22 +424,7 @@ export const adminAuthGuard: CanActivateFn = () => { }
 
 1. **El código debe explicarse por sí mismo** - usa nombres descriptivos
 2. **Documenta el "por qué", no el "qué"** - el código muestra el qué
-3. **Mantén la documentación actualizada** - código sin docs > docs obsoletas
-4. **Documenta APIs públicas siempre** - servicios, componentes públicos
-5. **Omite lo obvio** - `getName()` no necesita docs
-6. **Explica workarounds** - hacks o soluciones no estándar requieren explicación
-
-## Checklist
-
-Antes de commit, verificar:
-- [ ] ¿Métodos públicos complejos están documentados?
-- [ ] ¿Interfaces tienen descripción de campos no obvios?
-- [ ] ¿Hay @deprecated para métodos obsoletos?
-- [ ] ¿Código complejo tiene comentarios explicativos?
-- [ ] ¿Se eliminaron comentarios obvios?
-- [ ] ¿Ejemplos están actualizados si cambia el código?
-
----
-
-**Herramientas recomendadas:** Compodoc para generar documentación automática de proyectos Angular
+3. **Documenta APIs públicas siempre** - servicios, componentes públicos
+4. **Omite lo obvio** - `getName()` no necesita docs
+5. **Explica workarounds** - hacks o soluciones no estándar requieren explicación
 

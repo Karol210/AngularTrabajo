@@ -96,6 +96,17 @@
     border-radius: 8px 8px 0 0;
   }
 
+  &__no-image {
+    width: 100%;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--surface-ground);
+    color: var(--black-light);
+    border-radius: 8px 8px 0 0;
+  }
+
   // ✅ CUADRADO: Contenedor principal con padding lateral
   &__content {
     padding: 1.5rem;
@@ -114,6 +125,15 @@
     line-height: 1.3;
   }
 
+  &__category {
+    font-size: 0.75rem;
+    color: var(--red-main);
+    font-weight: 600;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
   &__description {
     font-size: 0.875rem;
     color: var(--black-light);
@@ -129,6 +149,13 @@
     align-items: center;
     margin-top: auto;
     padding-top: 1rem;
+    gap: 1rem;
+  }
+
+  &__prices {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
   }
 
   &__price {
@@ -136,6 +163,12 @@
     font-size: 1.5rem;
     font-weight: 700;
     color: var(--red-main);
+    line-height: 1;
+  }
+
+  &__unit-price {
+    font-size: 0.75rem;
+    color: var(--black-light);
   }
 
   &__out-of-stock {
