@@ -1,0 +1,44 @@
+<div class="admin-dashboard">
+  <div class="admin-dashboard__header">
+    <h1 class="admin-dashboard__title">Dashboard</h1>
+    <p class="admin-dashboard__subtitle">Bienvenido al panel de administración</p>
+  </div>
+
+  <div class="admin-dashboard__stats">
+    @for (stat of stats(); track stat.title) {
+      <p-card class="stat-card">
+        <div class="stat-card__content">
+          <div 
+            class="stat-card__icon"
+            [style.background-color]="stat.bgColor">
+            <i 
+              class="pi {{ stat.icon }}"
+              [style.color]="stat.color"></i>
+          </div>
+          <div class="stat-card__info">
+            <span class="stat-card__title">{{ stat.title }}</span>
+            <span 
+              class="stat-card__value"
+              [style.color]="stat.color">{{ stat.value }}</span>
+          </div>
+        </div>
+      </p-card>
+    }
+  </div>
+
+  <div class="admin-dashboard__content">
+    <p-card>
+      <ng-template pTemplate="header">
+        <div class="card-header">
+          <h2 class="card-header__title">Resumen de Actividad</h2>
+        </div>
+      </ng-template>
+      
+      <div class="activity-content">
+        <i class="pi pi-chart-bar" style="font-size: 3rem; color: var(--gray-main)"></i>
+        <p class="activity-content__text">Las estadísticas detalladas se mostrarán aquí</p>
+      </div>
+    </p-card>
+  </div>
+</div>
+

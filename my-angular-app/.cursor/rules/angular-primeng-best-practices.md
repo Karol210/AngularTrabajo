@@ -121,11 +121,16 @@ export const appConfig: ApplicationConfig = {
 ```
 
 ### Estilos Globales
-```scss
-// styles.scss
-@import "primeng/resources/themes/lara-light-blue/theme.css";
-@import "primeng/resources/primeng.css";
-@import "primeicons/primeicons.css";
+
+Configurar en `angular.json` (sección `styles`):
+
+```json
+"styles": [
+  "node_modules/primeng/resources/themes/lara-light-blue/theme.css",
+  "node_modules/primeng/resources/primeng.css",
+  "node_modules/primeicons/primeicons.css",
+  "src/styles.scss"
+]
 ```
 
 ### Uso de Componentes

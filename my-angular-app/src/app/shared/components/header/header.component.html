@@ -1,0 +1,26 @@
+<header class="header">
+  <div class="header__container">
+    <div class="header__logo">
+      <h1 class="header__logo-text">Davivienda</h1>
+      <span class="header__logo-subtitle">Marketplace</span>
+    </div>
+
+    <nav class="header__nav">
+      <p-button
+        label="Iniciar Sesión"
+        icon="pi pi-user"
+        (onClick)="navigateToLogin()"
+        [text]="true"
+        styleClass="header__button" />
+
+      <p-button
+        icon="pi pi-shopping-cart"
+        (onClick)="navigateToCart()"
+        [text]="true"
+        styleClass="header__button header__cart-button"
+        [badge]="cartItemsCount().toString()"
+        [badgeClass]="cartItemsCount() > 0 ? 'cart-badge' : 'cart-badge--empty'" />
+    </nav>
+  </div>
+</header>
+
