@@ -150,7 +150,9 @@ Todos los componentes son standalone con imports explícitos:
 }
 ```
 
-## 🎨 Sistema de Colores
+## 🎨 Sistema de Colores y Tema
+
+### Colores del Sistema
 
 El proyecto utiliza un sistema de diseño completo con variables CSS:
 
@@ -160,6 +162,19 @@ El proyecto utiliza un sistema de diseño completo con variables CSS:
 - **Cada familia tiene 4 tonalidades:** dark, main, light, extralight
 
 Ver `.cursor/rules/variables-css-colores.md` para la guía completa.
+
+### Tema PrimeNG v19
+
+PrimeNG v19 usa un sistema de Design Tokens configurado en `app.config.ts`:
+
+- Tema base: **Aura**
+- Personalizado con `definePreset` usando colores de Davivienda
+- Sistema basado en JavaScript, no CSS
+- Preset `DaviviendaPreset` con color primario `#E1111C`
+- **NO se usa `::ng-deep`** en componentes individuales
+- Tema consistente automáticamente
+
+Ver `.cursor/rules/primeng-v19-temas.md` para detalles del nuevo sistema.
 
 ## 🔒 Autenticación y Seguridad
 
@@ -242,6 +257,9 @@ El proyecto incluye reglas de desarrollo en `.cursor/rules/`:
 2. **enumeradores-constantes.md** - Uso de enums y constantes
 3. **variables-css-colores.md** - Sistema de colores
 4. **meta-reglas-escritura.md** - Cómo escribir buenas reglas
+5. **primeng-v19-temas.md** - Sistema de temas de PrimeNG v19 (Design Tokens)
+6. **primeng-tema-personalizado.md** - Referencia de conceptos de temas (deprecado para v19)
+7. **documentacion-codigo.md** - Documentación TypeScript/SCSS
 
 ## 🔄 Próximos Pasos
 

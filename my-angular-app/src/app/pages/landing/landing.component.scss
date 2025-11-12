@@ -70,35 +70,14 @@
 }
 
 .product-card {
-  ::ng-deep {
-    .p-card {
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-      transition: transform 0.2s, box-shadow 0.2s;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s, box-shadow 0.2s;
 
-      &:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
-      }
-
-      .p-card-header {
-        padding: 0;
-      }
-
-      .p-card-body {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        padding: 1.5rem;
-      }
-
-      .p-card-content {
-        flex: 1;
-        padding: 0;
-      }
-    }
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
   }
 
   &__image {
@@ -109,6 +88,7 @@
   }
 
   &__content {
+    padding: 1.5rem;  // ✅ CUADRADO: Solo el padre controla los lados
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
@@ -137,7 +117,7 @@
     justify-content: space-between;
     align-items: center;
     margin-top: auto;
-    padding-top: 1rem;
+    padding-top: 1rem;  // ✅ Solo espaciado vertical
   }
 
   &__price {
@@ -145,18 +125,6 @@
     font-size: 1.5rem;
     font-weight: 700;
     color: var(--red-main);
-  }
-
-  &__button {
-    ::ng-deep .p-button {
-      background-color: var(--red-main);
-      border-color: var(--red-main);
-
-      &:hover {
-        background-color: var(--red-dark);
-        border-color: var(--red-dark);
-      }
-    }
   }
 
   &__out-of-stock {

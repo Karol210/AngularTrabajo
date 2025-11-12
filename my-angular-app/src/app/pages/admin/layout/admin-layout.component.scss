@@ -64,62 +64,10 @@
     flex: 1;
     padding: 1rem 0;
 
-    ::ng-deep {
-      .admin-menu {
-        border: none;
-        background: transparent;
-        width: 100%;
-
-        .p-menu-list {
-          padding: 0;
-        }
-
-        .p-menuitem {
-          margin: 0;
-        }
-
-        .p-menuitem-link {
-          padding: 1rem 1.5rem;
-          color: var(--black-main);
-          transition: all 0.2s;
-          border-left: 3px solid transparent;
-
-          &:hover {
-            background-color: var(--gray-light);
-            color: var(--red-main);
-            border-left-color: var(--red-main);
-          }
-
-          &:focus {
-            box-shadow: none;
-          }
-
-          .p-menuitem-icon {
-            color: var(--black-light);
-            margin-right: 0.75rem;
-          }
-
-          &:hover .p-menuitem-icon {
-            color: var(--red-main);
-          }
-        }
-
-        .p-menuitem-link.router-link-active {
-          background-color: var(--red-extralight);
-          color: var(--red-dark);
-          border-left-color: var(--red-main);
-          font-weight: 600;
-
-          .p-menuitem-icon {
-            color: var(--red-main);
-          }
-        }
-
-        .p-menuitem-separator {
-          margin: 0.5rem 1.5rem;
-          border-top: 1px solid var(--gray-light);
-        }
-      }
+    .admin-menu {
+      border: none;
+      background: transparent;
+      width: 100%;
     }
   }
 

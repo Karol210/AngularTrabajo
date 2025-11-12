@@ -31,25 +31,13 @@
   }
 
   &__card {
-    ::ng-deep {
-      .p-card {
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-        border-radius: 12px;
-        border-top: 4px solid var(--red-main);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    border-top: 4px solid var(--red-main);
+  }
 
-        .p-card-header {
-          padding: 2rem 2rem 0 2rem;
-        }
-
-        .p-card-body {
-          padding: 1.5rem 2rem 2rem 2rem;
-        }
-
-        .p-card-content {
-          padding: 0;
-        }
-      }
-    }
+  &__content {
+    padding: 1.5rem;  // ✅ CUADRADO: Solo el padre controla los lados
   }
 
   &__card-header {
@@ -57,6 +45,8 @@
     flex-direction: column;
     align-items: center;
     gap: 1rem;
+    padding-top: 0.5rem;
+    padding-bottom: 1rem;  // ✅ Solo espaciado vertical
 
     h2 {
       font-family: var(--font-family);
@@ -70,6 +60,12 @@
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
+    padding-top: 0.5rem;  // ✅ Solo espaciado vertical
+  }
+
+  &__button {
+    align-self: center;
+    min-width: 200px;
   }
 
   &__info {
@@ -87,21 +83,6 @@
       color: var(--red-main);
     }
   }
-
-  &__button {
-    ::ng-deep .p-button {
-      width: 100%;
-      background-color: var(--red-main);
-      border-color: var(--red-main);
-      padding: 0.75rem;
-      font-size: 1rem;
-
-      &:hover {
-        background-color: var(--red-dark);
-        border-color: var(--red-dark);
-      }
-    }
-  }
 }
 
 .form-field {
@@ -116,23 +97,13 @@
   }
 
   &__input {
-    width: 100%;
-
     &.ng-invalid.ng-touched {
       border-color: var(--red-main);
     }
   }
 
   &__password {
-    ::ng-deep {
-      .p-password-input {
-        width: 100%;
-      }
-
-      .p-inputtext.ng-invalid.ng-touched {
-        border-color: var(--red-main);
-      }
-    }
+    // Ya es 100% por estilos globales
   }
 
   &__error {
@@ -154,17 +125,6 @@
       font-size: 1rem;
     }
 
-    &__card {
-      ::ng-deep {
-        .p-card-header {
-          padding: 1.5rem 1.5rem 0 1.5rem;
-        }
-
-        .p-card-body {
-          padding: 1rem 1.5rem 1.5rem 1.5rem;
-        }
-      }
-    }
   }
 }
 

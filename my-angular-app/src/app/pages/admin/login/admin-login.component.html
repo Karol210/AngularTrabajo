@@ -8,14 +8,13 @@
     </div>
 
     <p-card class="admin-login__card">
-      <ng-template pTemplate="header">
+      <div class="admin-login__content">
         <div class="admin-login__card-header">
           <i class="pi pi-shield" style="font-size: 3rem; color: var(--red-main)"></i>
           <h2>Iniciar Sesión</h2>
         </div>
-      </ng-template>
 
-      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="admin-login__form">
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="admin-login__form">
         <div class="form-field">
           <label for="username" class="form-field__label">Usuario</label>
           <input
@@ -62,7 +61,8 @@
           icon="pi pi-sign-in"
           [loading]="loading()"
           styleClass="admin-login__button" />
-      </form>
+        </form>
+      </div>
     </p-card>
   </div>
 </div>

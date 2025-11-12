@@ -30,24 +30,11 @@
 }
 
 .stat-card {
-  ::ng-deep {
-    .p-card {
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-      transition: transform 0.2s, box-shadow 0.2s;
+  transition: transform 0.2s, box-shadow 0.2s;
 
-      &:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
-      }
-
-      .p-card-body {
-        padding: 1.5rem;
-      }
-
-      .p-card-content {
-        padding: 0;
-      }
-    }
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
   }
 
   &__content {

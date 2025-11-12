@@ -120,17 +120,97 @@ export const appConfig: ApplicationConfig = {
 };
 ```
 
-### Estilos Globales
+### Estilos y Temas
 
-Configurar en `angular.json` (sección `styles`):
+**PrimeNG v19** usa un sistema de temas basado en Design Tokens (JavaScript), NO CSS.
 
+1. Instalar paquete de temas:
+```bash
+npm install @primeng/themes --save
+```
+
+2. Configurar en `app.config.ts`:
+```typescript
+import { providePrimeNG } from 'primeng/config';
+import { definePreset } from '@primeng/themes';
+import Aura from '@primeng/themes/aura';
+
+const DaviviendaPreset = definePreset(Aura, {
+  semantic: {
+    primary: { /* colores personalizados */ },
+    colorScheme: { /* esquema de colores */ }
+  }
+});
+
+providePrimeNG({
+  theme: { preset: DaviviendaPreset }
+})
+```
+
+3. Configurar `angular.json`:
 ```json
 "styles": [
-  "node_modules/primeng/resources/themes/lara-light-blue/theme.css",
-  "node_modules/primeng/resources/primeng.css",
   "node_modules/primeicons/primeicons.css",
   "src/styles.scss"
 ]
+```
+
+**Ver:** `primeng-v19-temas.md` para documentación completa del nuevo sistema de temas.
+
+### Estilos Globales
+
+**Inputs:**
+
+Todos los inputs de PrimeNG deben ocupar el 100% del ancho de su contenedor:
+
+```scss
+// styles.scss
+.p-inputtext,
+.p-textarea,
+.p-password,
+.p-dropdown,
+.p-calendar,
+.p-inputnumber {
+  width: 100%;
+  
+  input {
+    width: 100%;
+  }
+}
+
+.p-password-input {
+  width: 100%;
+}
+
+.p-float-label,
+.p-inputwrapper {
+  width: 100%;
+}
+```
+
+**Cards:**
+
+Para mejor control del espaciado, eliminar padding por defecto y aplicar manualmente en cada componente:
+
+```scss
+// styles.scss
+.p-card .p-card-header,
+.p-card .p-card-body {
+  padding: 0;
+}
+```
+
+En cada componente aplicar padding consistente:
+
+```scss
+// component.scss
+.my-card-header {
+  padding: 2rem 1.5rem 1rem 1.5rem;
+}
+
+.my-card-body {
+  padding: 0 1.5rem 1.5rem 1.5rem;
+}
 ```
 
 ### Uso de Componentes

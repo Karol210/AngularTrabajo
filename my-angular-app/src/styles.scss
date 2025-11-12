@@ -80,3 +80,41 @@ html, body {
   background-color: var(--background-body);
   color: var(--black-main);
 }
+
+/* PrimeNG - Inputs siempre 100% de ancho */
+.p-inputtext,
+.p-textarea,
+.p-inputnumber,
+.p-inputmask,
+.p-dropdown,
+.p-multiselect,
+.p-calendar,
+.p-autocomplete,
+.p-password {
+  width: 100%;
+  
+  input {
+    width: 100%;
+  }
+  
+  .p-inputtext {
+    width: 100%;
+  }
+}
+
+/* PrimeNG Password específico */
+.p-password-input {
+  width: 100%;
+}
+
+/* Asegurar que los wrappers también sean 100% */
+.p-float-label,
+.p-inputwrapper {
+  width: 100%;
+}
+
+/* PrimeNG Card - Eliminar padding por defecto para control manual */
+.p-card .p-card-header,
+.p-card .p-card-body {
+  padding: 0;
+}

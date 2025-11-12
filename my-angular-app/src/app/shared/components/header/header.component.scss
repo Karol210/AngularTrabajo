@@ -42,36 +42,11 @@
     gap: 1rem;
   }
 
-  &__button {
-    ::ng-deep {
-      .p-button {
-        color: var(--black-main);
-        
-        &:hover {
-          background-color: var(--gray-light);
-          color: var(--red-main);
-        }
-      }
-    }
-  }
-
   &__cart-button {
     position: relative;
 
-    ::ng-deep {
-      .p-badge {
-        &.cart-badge {
-          background-color: var(--red-main);
-          color: var(--white);
-          font-size: 0.75rem;
-          min-width: 1.25rem;
-          height: 1.25rem;
-        }
-
-        &.cart-badge--empty {
-          display: none;
-        }
-      }
+    .cart-badge--empty {
+      display: none;
     }
   }
 }
@@ -90,11 +65,6 @@
       font-size: 0.75rem;
     }
 
-    &__button {
-      ::ng-deep .p-button-label {
-        display: none;
-      }
-    }
   }
 }
 
