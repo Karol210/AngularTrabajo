@@ -1,5 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
 
+/* Sistema de Grid y Columnas */
+@use 'styles/grid-system';
+
 /* Davivienda Brand Colors & Design System */
 :root {
   --red-dark: #B70412;

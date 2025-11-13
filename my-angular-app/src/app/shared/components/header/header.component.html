@@ -6,12 +6,25 @@
     </div>
 
     <nav class="header__nav">
-      <p-button
-        label="Iniciar Sesión"
-        icon="pi pi-user"
-        (onClick)="navigateToLogin()"
-        [text]="true"
-        styleClass="header__button" />
+      @if (!isAuthenticated()) {
+        <p-button
+          label="Iniciar Sesión"
+          icon="pi pi-user"
+          (onClick)="navigateToLogin()"
+          [text]="true"
+          styleClass="header__button" />
+      } @else {
+        <div class="header__user-info">
+          <span class="header__greeting">Hola, {{ currentUser() }}</span>
+          <p-button
+            label="Cerrar Sesión"
+            icon="pi pi-sign-out"
+            (onClick)="logout()"
+            [text]="true"
+            styleClass="header__button header__logout-button"
+            severity="secondary" />
+        </div>
+      }
 
       <p-button
         icon="pi pi-shopping-cart"
@@ -23,4 +36,7 @@
     </nav>
   </div>
 </header>
+
+<!-- Modal de autenticación -->
+<app-auth-modal />
 

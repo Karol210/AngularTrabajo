@@ -98,15 +98,5 @@ export class AdminLoginComponent {
       control?.markAsTouched();
     });
   }
-
-  /**
-   * Verifica si un campo es inválido y ha sido tocado.
-   * @param fieldName - Nombre del campo a validar
-   * @returns true si el campo es inválido y ha sido tocado
-   */
-  isFieldInvalid(fieldName: string): boolean {
-    const field = this.loginForm.get(fieldName);
-    return !!(field?.invalid && field?.touched);
-  }
 }
 

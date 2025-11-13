@@ -1,11 +1,14 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { Observable, tap } from 'rxjs';
 import { StorageKeys } from '../enums/storage-keys.enum';
 import { AppRoutes } from '../enums/app-routes.enum';
-import { User, LoginCredentials, AuthResponse } from '../models/user.model';
+import { User, LoginCredentials, AuthResponse, UserLoginCredentials, UserLoginResponse } from '../models/user.model';
+import { environment } from '../../../environments/environment';
 
 /**
- * Servicio para gestionar la autenticación de administradores.
+ * Servicio para gestionar la autenticación de administradores y usuarios.
  * Maneja login, logout y persistencia de sesión en sessionStorage.
  */
 @Injectable({
@@ -13,7 +16,9 @@ import { User, LoginCredentials, AuthResponse } from '../models/user.model';
 })
 export class AuthService {
   private router = inject(Router);
+  private http = inject(HttpClient);
   private adminUserState = signal<User | null>(null);
+  private userState = signal<string | null>(null);
   
   /**
    * Signal reactivo con el usuario administrador actual.
@@ -22,12 +27,24 @@ export class AuthService {
   adminUser = this.adminUserState.asReadonly();
   
   /**
+   * Signal reactivo con el nombre del usuario regular autenticado.
+   * Null si no hay sesión activa.
+   */
+  currentUser = this.userState.asReadonly();
+  
+  /**
    * Signal reactivo que indica si hay un administrador autenticado.
    */
   isAdminAuthenticated = computed(() => this.adminUserState() !== null);
+  
+  /**
+   * Signal reactivo que indica si hay un usuario regular autenticado.
+   */
+  isUserAuthenticated = computed(() => this.userState() !== null);
 
   constructor() {
     this.loadAdminFromStorage();
+    this.loadUserFromStorage();
   }
 
   private loadAdminFromStorage(): void {
@@ -41,6 +58,15 @@ export class AuthService {
       } catch (error) {
         this.clearAdminSession();
       }
+    }
+  }
+
+  private loadUserFromStorage(): void {
+    const token = sessionStorage.getItem(StorageKeys.USER_TOKEN);
+    const username = sessionStorage.getItem(StorageKeys.USER_NAME);
+    
+    if (token && username) {
+      this.userState.set(username);
     }
   }
 
@@ -92,6 +118,35 @@ export class AuthService {
     sessionStorage.removeItem(StorageKeys.ADMIN_TOKEN);
     sessionStorage.removeItem(StorageKeys.ADMIN_USER);
     this.adminUserState.set(null);
+  }
+
+  /**
+   * Inicia sesión de usuario regular y persiste la sesión en sessionStorage.
+   * 
+   * @param credentials - Email y contraseña del usuario
+   * @returns Observable con la respuesta del login
+   */
+  userLogin(credentials: UserLoginCredentials): Observable<UserLoginResponse> {
+    return this.http.post<UserLoginResponse>(
+      `${environment.apiUrl}/api/v1/auth/login`,
+      credentials
+    ).pipe(
+      tap(response => {
+        sessionStorage.setItem(StorageKeys.USER_TOKEN, response.token);
+        sessionStorage.setItem(StorageKeys.USER_NAME, response.username);
+        this.userState.set(response.username);
+      })
+    );
+  }
+
+  /**
+   * Cierra la sesión del usuario regular.
+   * Limpia token y datos de usuario de sessionStorage.
+   */
+  userLogout(): void {
+    sessionStorage.removeItem(StorageKeys.USER_TOKEN);
+    sessionStorage.removeItem(StorageKeys.USER_NAME);
+    this.userState.set(null);
   }
 }
 

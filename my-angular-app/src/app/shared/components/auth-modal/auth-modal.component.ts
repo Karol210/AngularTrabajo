@@ -1,0 +1,229 @@
+import { Component, inject, signal, output } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { DialogModule } from 'primeng/dialog';
+import { InputTextModule } from 'primeng/inputtext';
+import { PasswordModule } from 'primeng/password';
+import { DropdownModule } from 'primeng/dropdown';
+import { ButtonModule } from 'primeng/button';
+import { MessageService } from 'primeng/api';
+import { UserService } from '../../../core/services/user.service';
+import { DocumentTypeService } from '../../../core/services/document-type.service';
+import { AuthService } from '../../../core/services/auth.service';
+import { RegisterRequest } from '../../../core/models/register.model';
+
+/**
+ * Componente modal para autenticación de usuarios.
+ * Maneja tanto login como registro de usuarios.
+ */
+@Component({
+  selector: 'app-auth-modal',
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    DialogModule,
+    InputTextModule,
+    PasswordModule,
+    DropdownModule,
+    ButtonModule
+  ],
+  templateUrl: './auth-modal.component.html',
+  styleUrl: './auth-modal.component.scss'
+})
+export class AuthModalComponent {
+  private readonly fb = inject(FormBuilder);
+  private readonly userService = inject(UserService);
+  private readonly documentTypeService = inject(DocumentTypeService);
+  private readonly authService = inject(AuthService);
+  private readonly messageService = inject(MessageService);
+
+  /** Signal que controla la visibilidad del modal */
+  visible = signal(false);
+  
+  /** Signal que controla qué vista se muestra (login o registro) */
+  isLoginView = signal(true);
+  
+  /** Signal que indica si se está procesando una petición */
+  loading = signal(false);
+
+  /** Tipos de documentos disponibles */
+  readonly documentTypes = this.documentTypeService.documentTypes;
+  
+  /** Indica si los tipos de documentos están cargando */
+  readonly documentTypesLoading = this.documentTypeService.loading;
+
+  /** Evento emitido cuando el login es exitoso */
+  loginSuccess = output<void>();
+
+  /** Formulario de login */
+  loginForm: FormGroup;
+  
+  /** Formulario de registro */
+  registerForm: FormGroup;
+
+  constructor() {
+    this.loginForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required]]
+    });
+
+    this.registerForm = this.fb.group({
+      nombre: ['', [Validators.required, Validators.minLength(2)]],
+      apellido: ['', [Validators.required, Validators.minLength(2)]],
+      documentTypeId: [null, [Validators.required]],
+      documentNumber: ['', [Validators.required, Validators.pattern(/^[0-9]+$/)]],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(8)]],
+      confirmPassword: ['', [Validators.required]]
+    }, { validators: this.passwordMatchValidator });
+  }
+
+  /**
+   * Validador personalizado para verificar que las contraseñas coincidan.
+   */
+  private passwordMatchValidator(form: FormGroup) {
+    const password = form.get('password')?.value;
+    const confirmPassword = form.get('confirmPassword')?.value;
+    
+    if (password !== confirmPassword) {
+      form.get('confirmPassword')?.setErrors({ passwordMismatch: true });
+      return { passwordMismatch: true };
+    }
+    
+    return null;
+  }
+
+  /**
+   * Abre el modal en la vista de login.
+   */
+  show(): void {
+    this.visible.set(true);
+    this.isLoginView.set(true);
+    this.resetForms();
+  }
+
+  /**
+   * Cierra el modal.
+   */
+  hide(): void {
+    this.visible.set(false);
+    this.resetForms();
+  }
+
+  /**
+   * Cambia a la vista de registro.
+   */
+  switchToRegister(): void {
+    this.isLoginView.set(false);
+    this.resetForms();
+  }
+
+  /**
+   * Cambia a la vista de login.
+   */
+  switchToLogin(): void {
+    this.isLoginView.set(true);
+    this.resetForms();
+  }
+
+  /**
+   * Resetea ambos formularios.
+   */
+  private resetForms(): void {
+    this.loginForm.reset();
+    this.registerForm.reset();
+  }
+
+  /**
+   * Maneja el submit del formulario de login.
+   */
+  onLoginSubmit(): void {
+    if (this.loginForm.valid) {
+      this.loading.set(true);
+      
+      this.authService.userLogin(this.loginForm.value).subscribe({
+        next: (response) => {
+          this.loading.set(false);
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Login Exitoso',
+            detail: response.message,
+            life: 3000
+          });
+          this.hide();
+          this.loginSuccess.emit();
+        },
+        error: (error) => {
+          this.loading.set(false);
+          const errorMessage = error.error?.message || 'Error al iniciar sesión. Verifique sus credenciales.';
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error en Login',
+            detail: errorMessage,
+            life: 5000
+          });
+        }
+      });
+    } else {
+      this.markFormGroupTouched(this.loginForm);
+    }
+  }
+
+  /**
+   * Maneja el submit del formulario de registro.
+   */
+  onRegisterSubmit(): void {
+    if (this.registerForm.valid) {
+      this.loading.set(true);
+      
+      const { confirmPassword, ...registerData } = this.registerForm.value;
+      
+      // El roleId se asigna por defecto a 2 (usuario normal)
+      const request: RegisterRequest = {
+        ...registerData,
+        roleIds: [2]
+      };
+
+      this.userService.register(request).subscribe({
+        next: (response) => {
+          this.loading.set(false);
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Registro Exitoso',
+            detail: response.message,
+            life: 5000
+          });
+          this.hide();
+        },
+        error: (error) => {
+          this.loading.set(false);
+          const errorMessage = error.error?.message || 'Error al registrar usuario. Intente nuevamente.';
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error en Registro',
+            detail: errorMessage,
+            life: 5000
+          });
+        }
+      });
+    } else {
+      this.markFormGroupTouched(this.registerForm);
+    }
+  }
+
+  /**
+   * Marca todos los controles de un formulario como touched para mostrar validaciones.
+   */
+  private markFormGroupTouched(formGroup: FormGroup): void {
+    Object.keys(formGroup.controls).forEach(key => {
+      const control = formGroup.get(key);
+      control?.markAsTouched();
+
+      if (control instanceof FormGroup) {
+        this.markFormGroupTouched(control);
+      }
+    });
+  }
+}
+

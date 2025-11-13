@@ -18,7 +18,7 @@ export class ProductService {
   private readonly http = inject(HttpClient);
   private readonly productsState = signal<Product[]>([]);
   private readonly loadingState = signal(false);
-  private readonly baseUrl = `${environment.apiUrl}/products`;
+  private readonly baseUrl = `${environment.apiUrl}/api/v1/products`;
   
   /** Signal reactivo con la lista de productos */
   readonly products = this.productsState.asReadonly();
