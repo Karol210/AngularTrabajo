@@ -2,27 +2,34 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, catchError, throwError } from 'rxjs';
 import { RegisterRequest, RegisterResponse } from '../models/register.model';
+import { UserResponse } from '../models/user-response';
+import { ApiResponse } from '../models/api-response.model';
+import { StorageKeys } from '../enums/storage-keys.enum';
+import { ApiEndpoints } from '../enums/api-endpoints.enum';
 import { environment } from '../../../environments/environment';
 
 /**
  * Servicio para gestionar operaciones de usuarios.
- * Proporciona métodos para registro y gestión de usuarios.
+ * Proporciona métodos para registro, consulta y gestión de usuarios.
  */
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = `${environment.apiUrl}/api/v1/users`;
 
   /**
    * Genera los headers necesarios para las peticiones HTTP.
+   * Incluye token de autenticación si está disponible.
    * @returns HttpHeaders configurados
    */
   private getHeaders(): HttpHeaders {
-    return new HttpHeaders({
-      'Content-Type': 'application/json'
-    });
+    let headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const token = sessionStorage.getItem(StorageKeys.ADMIN_TOKEN);
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
+    }
+    return headers;
   }
 
   /**
@@ -32,12 +39,29 @@ export class UserService {
    */
   register(request: RegisterRequest): Observable<RegisterResponse> {
     return this.http.post<RegisterResponse>(
-      `${this.baseUrl}/create`,
+      `${environment.apiUrl}${ApiEndpoints.USERS_CREATE}`,
       request,
       { headers: this.getHeaders() }
     ).pipe(
       catchError(error => {
         console.error('Error en registro de usuario:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  /**
+   * Obtiene todos los usuarios del sistema.
+   * Requiere autenticación de administrador.
+   * @returns Observable con la lista completa de usuarios
+   */
+  getAllUsers(): Observable<ApiResponse<UserResponse[]>> {
+    return this.http.get<ApiResponse<UserResponse[]>>(
+      `${environment.apiUrl}${ApiEndpoints.USERS_ALL}`,
+      { headers: this.getHeaders() }
+    ).pipe(
+      catchError(error => {
+        console.error('Error al obtener usuarios:', error);
         return throwError(() => error);
       })
     );

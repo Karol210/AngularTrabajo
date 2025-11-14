@@ -7,13 +7,20 @@ export interface Product {
   name: string;
   description: string;
   categoryName: string;
-  categoryDescription: string;
-  unitPrice: number;
-  taxRate: number;
-  taxAmount: number;
+  categoryDescription?: string;
+  unitPrice?: number;
+  unitValue?: number;
+  taxRate?: number;
+  iva?: number;
+  taxAmount?: number;
+  ivaAmount?: number;
   totalPrice: number;
   imageUrl?: string;
   active: boolean;
+  estadoProductoId?: number;
+  categoryId?: number;
+  stock?: number;
+  createdAt?: string;
 }
 
 export interface CartItem {

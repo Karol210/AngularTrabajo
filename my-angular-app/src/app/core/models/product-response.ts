@@ -16,6 +16,8 @@ export interface ProductResponse {
   imageUrl?: string;
   estadoProductoId?: number;
   categoryId?: number;
+  stock?: number; 
+  
   createdAt?: string;
 }
 

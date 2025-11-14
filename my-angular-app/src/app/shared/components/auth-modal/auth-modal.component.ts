@@ -1,5 +1,4 @@
 import { Component, inject, signal, output } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { tap } from 'rxjs';
 import { DialogModule } from 'primeng/dialog';
@@ -13,6 +12,7 @@ import { DocumentTypeService } from '../../../core/services/document-type.servic
 import { AuthService } from '../../../core/services/auth.service';
 import { CartService } from '../../../core/services/cart.service';
 import { RegisterRequest } from '../../../core/models/register.model';
+import { Messages, MessageTitles } from '../../constants/messages.constants';
 
 /**
  * Componente modal para autenticación de usuarios.
@@ -22,7 +22,6 @@ import { RegisterRequest } from '../../../core/models/register.model';
   selector: 'app-auth-modal',
   standalone: true,
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     DialogModule,
     InputTextModule,
@@ -42,13 +41,13 @@ export class AuthModalComponent {
   private readonly messageService = inject(MessageService);
 
   /** Signal que controla la visibilidad del modal */
-  visible = signal(false);
+  readonly visible = signal(false);
   
   /** Signal que controla qué vista se muestra (login o registro) */
-  isLoginView = signal(true);
+  readonly isLoginView = signal(true);
   
   /** Signal que indica si se está procesando una petición */
-  loading = signal(false);
+  readonly loading = signal(false);
 
   /** Tipos de documentos disponibles */
   readonly documentTypes = this.documentTypeService.documentTypes;
@@ -57,13 +56,13 @@ export class AuthModalComponent {
   readonly documentTypesLoading = this.documentTypeService.loading;
 
   /** Evento emitido cuando el login es exitoso */
-  loginSuccess = output<void>();
+  readonly loginSuccess = output<void>();
 
   /** Formulario de login */
-  loginForm: FormGroup;
+  readonly loginForm: FormGroup;
   
   /** Formulario de registro */
-  registerForm: FormGroup;
+  readonly registerForm: FormGroup;
 
   constructor() {
     this.loginForm = this.fb.group({
@@ -157,8 +156,8 @@ export class AuthModalComponent {
           this.loading.set(false);
           this.messageService.add({
             severity: 'success',
-            summary: 'Login Exitoso',
-            detail: response.message,
+            summary: MessageTitles.SUCCESS,
+            detail: Messages.SUCCESS.LOGIN_SUCCESS,
             life: 3000
           });
           this.hide();
@@ -166,10 +165,10 @@ export class AuthModalComponent {
         },
         error: (error) => {
           this.loading.set(false);
-          const errorMessage = error.error?.message || 'Error al iniciar sesión. Verifique sus credenciales.';
+          const errorMessage = error.error?.message || Messages.ERROR.LOGIN_FAILED;
           this.messageService.add({
             severity: 'error',
-            summary: 'Error en Login',
+            summary: MessageTitles.ERROR,
             detail: errorMessage,
             life: 5000
           });
@@ -200,18 +199,18 @@ export class AuthModalComponent {
           this.loading.set(false);
           this.messageService.add({
             severity: 'success',
-            summary: 'Registro Exitoso',
-            detail: response.message,
+            summary: MessageTitles.SUCCESS,
+            detail: Messages.SUCCESS.REGISTER_SUCCESS,
             life: 5000
           });
           this.hide();
         },
         error: (error) => {
           this.loading.set(false);
-          const errorMessage = error.error?.message || 'Error al registrar usuario. Intente nuevamente.';
+          const errorMessage = error.error?.message || Messages.ERROR.REGISTER_FAILED;
           this.messageService.add({
             severity: 'error',
-            summary: 'Error en Registro',
+            summary: MessageTitles.ERROR,
             detail: errorMessage,
             life: 5000
           });

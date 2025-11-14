@@ -4,6 +4,7 @@ import { Observable, catchError, throwError } from 'rxjs';
 import { DocumentType } from '../models/document-type.model';
 import { ApiResponse } from '../models/api-response.model';
 import { StorageKeys } from '../enums/storage-keys.enum';
+import { ApiEndpoints } from '../enums/api-endpoints.enum';
 import { environment } from '../../../environments/environment';
 
 /**
@@ -17,7 +18,6 @@ export class DocumentTypeService {
   private readonly http = inject(HttpClient);
   private readonly documentTypesState = signal<DocumentType[]>([]);
   private readonly loadingState = signal(false);
-  private readonly baseUrl = `${environment.apiUrl}/api/v1/document-types`;
   
   /** Signal reactivo con la lista de tipos de documentos */
   readonly documentTypes = this.documentTypesState.asReadonly();
@@ -74,7 +74,7 @@ export class DocumentTypeService {
    */
   listAllDocumentTypes(): Observable<ApiResponse<DocumentType[]>> {
     return this.http.get<ApiResponse<DocumentType[]>>(
-      this.baseUrl,
+      `${environment.apiUrl}${ApiEndpoints.DOCUMENT_TYPES_ALL}`,
       { headers: this.getHeaders() }
     ).pipe(
       catchError(error => {

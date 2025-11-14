@@ -10,6 +10,7 @@ import { ToastModule } from 'primeng/toast';
 import { AuthService } from '../../../core/services/auth.service';
 import { AppRoutes } from '../../../core/enums/app-routes.enum';
 import { LoginCredentials } from '../../../core/models/user.model';
+import { Messages, MessageTitles } from '../../../shared/constants/messages.constants';
 
 /**
  * Componente de login para administradores.
@@ -48,7 +49,7 @@ export class AdminLoginComponent {
    * Procesa el envío del formulario de login.
    * Valida credenciales y redirige al dashboard si es exitoso.
    */
-  async onSubmit(): Promise<void> {
+  onSubmit(): void {
     if (this.loginForm.invalid) {
       this.markFormGroupTouched();
       return;
@@ -56,36 +57,31 @@ export class AdminLoginComponent {
 
     this.loading.set(true);
 
-    try {
-      const credentials = this.loginForm.value as LoginCredentials;
-      const success = await this.authService.adminLogin(credentials);
-
-      if (success) {
+    const credentials = this.loginForm.value as LoginCredentials;
+    
+    this.authService.adminLogin(credentials).subscribe({
+      next: (response) => {
+        this.loading.set(false);
         this.messageService.add({
           severity: 'success',
-          summary: 'Inicio de sesión exitoso',
-          detail: 'Bienvenido al panel de administración'
+          summary: MessageTitles.SUCCESS,
+          detail: Messages.SUCCESS.LOGIN_SUCCESS
         });
         
         setTimeout(() => {
           this.router.navigate([AppRoutes.ADMIN_DASHBOARD]);
         }, 500);
-      } else {
+      },
+      error: (error) => {
+        this.loading.set(false);
+        const errorMessage = error.error?.message || Messages.ERROR.INVALID_CREDENTIALS;
         this.messageService.add({
           severity: 'error',
-          summary: 'Error de autenticación',
-          detail: 'Usuario o contraseña incorrectos'
+          summary: MessageTitles.ERROR,
+          detail: errorMessage
         });
       }
-    } catch (error) {
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Error',
-        detail: 'Ocurrió un error al iniciar sesión'
-      });
-    } finally {
-      this.loading.set(false);
-    }
+    });
   }
 
   /**

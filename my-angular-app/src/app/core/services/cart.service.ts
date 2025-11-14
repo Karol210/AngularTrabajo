@@ -1,10 +1,11 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, catchError, throwError, tap, delay, switchMap } from 'rxjs';
+import { Observable, catchError, throwError } from 'rxjs';
 import { Product, CartItem } from '../models/product.model';
 import { AddToCartRequest } from '../models/cart-request.model';
 import { CartSummary, CartItemSummary } from '../models/cart-summary.model';
 import { ApiResponse } from '../models/api-response.model';
+import { ApiEndpoints } from '../enums/api-endpoints.enum';
 import { AuthService } from './auth.service';
 import { environment } from '../../../environments/environment';
 
@@ -18,14 +19,13 @@ import { environment } from '../../../environments/environment';
 export class CartService {
   private readonly http = inject(HttpClient);
   private readonly authService = inject(AuthService);
-  private readonly baseUrl = `${environment.apiUrl}/api/v1/cart-items`;
   
-  private cartSummaryState = signal<CartSummary | null>(null);
+  private readonly cartSummaryState = signal<CartSummary | null>(null);
   
   /**
    * Items del carrito mapeados desde el resumen del backend.
    */
-  cartItems = computed(() => {
+  readonly cartItems = computed(() => {
     const summary = this.cartSummaryState();
     if (!summary || summary.empty) {
       return [];
@@ -36,7 +36,7 @@ export class CartService {
   /**
    * Total de items en el carrito.
    */
-  totalItems = computed(() => {
+  readonly totalItems = computed(() => {
     const summary = this.cartSummaryState();
     return summary?.totalItems ?? 0;
   });
@@ -44,7 +44,7 @@ export class CartService {
   /**
    * Precio total del carrito en pesos colombianos (COP).
    */
-  totalPrice = computed(() => {
+  readonly totalPrice = computed(() => {
     const summary = this.cartSummaryState();
     return summary?.totalPrice ?? 0;
   });
@@ -117,7 +117,7 @@ export class CartService {
    */
   getCartSummary(): Observable<ApiResponse<CartSummary>> {
     return this.http.get<ApiResponse<CartSummary>>(
-      `${this.baseUrl}/summary`,
+      `${environment.apiUrl}${ApiEndpoints.CART_SUMMARY}`,
       { headers: this.getHeaders() }
     ).pipe(
       catchError(error => {
@@ -142,7 +142,7 @@ export class CartService {
     };
 
     return this.http.post<ApiResponse<string>>(
-      `${this.baseUrl}/add`,
+      `${environment.apiUrl}${ApiEndpoints.CART_ADD}`,
       request,
       { headers: this.getHeaders() }
     ).pipe(
@@ -173,7 +173,7 @@ export class CartService {
     };
 
     return this.http.post<ApiResponse<string>>(
-      `${this.baseUrl}/add`,
+      `${environment.apiUrl}${ApiEndpoints.CART_ADD}`,
       request,
       { headers: this.getHeaders() }
     ).pipe(
@@ -201,7 +201,7 @@ export class CartService {
    */
   removeFromCart(productId: number): Observable<ApiResponse<string>> {
     return this.http.delete<ApiResponse<string>>(
-      `${this.baseUrl}/${productId}`,
+      `${environment.apiUrl}${ApiEndpoints.CART_REMOVE}/${productId}`,
       { headers: this.getHeaders() }
     ).pipe(
       catchError(error => {

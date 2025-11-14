@@ -7,18 +7,19 @@
   // Header del dashboard
   &__header {
     margin-bottom: 2rem;
+    margin-top: 2rem;
   }
 
   &__title {
     font-family: var(--font-family);
-    font-size: 2rem;
+    font-size: 1.5rem;
     font-weight: 700;
     color: var(--black-dark);
     margin: 0 0 0.5rem 0;
   }
 
   &__subtitle {
-    font-size: 1rem;
+    font-size: 0.95rem;
     color: var(--black-light);
     margin: 0;
   }
@@ -29,16 +30,88 @@
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 1.5rem;
     margin-bottom: 2rem;
+    justify-items: stretch;
+    align-items: stretch;
   }
+}
+
+/* Welcome Card */
+.welcome-card {
+  margin-bottom: 2rem;
+  background: linear-gradient(135deg, var(--white) 0%, var(--gray-extralight) 100%);
+  border-left: 4px solid var(--red-main);
 
   &__content {
-    margin-top: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    padding: 0.5rem;
+  }
+
+  &__text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  &__greeting {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  &__title {
+    font-family: var(--font-family);
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--black-dark);
+    margin: 0;
+    line-height: 1.2;
+  }
+
+  &__name {
+    color: var(--red-main);
+  }
+
+  &__subtitle {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--black-light);
+    margin: 0;
+  }
+
+  &__description {
+    font-size: 0.95rem;
+    color: var(--black-light);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  &__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 120px;
+    height: 120px;
+    background: linear-gradient(135deg, var(--red-extralight) 0%, var(--red-light) 100%);
+    border-radius: 50%;
+    flex-shrink: 0;
+
+    i {
+      font-size: 4rem;
+      color: var(--red-main);
+    }
   }
 }
 
 /* Tarjetas de Estadísticas */
 .stat-card {
   transition: transform 0.2s, box-shadow 0.2s;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 
   &:hover {
     transform: translateY(-4px);
@@ -49,6 +122,7 @@
     display: flex;
     align-items: center;
     gap: 1.5rem;
+    flex: 1;
   }
 
   &__icon {
@@ -85,35 +159,6 @@
   }
 }
 
-/* Card Header */
-.card-header {
-  padding: 1.5rem 1.5rem 0 1.5rem;
-
-  &__title {
-    font-family: var(--font-family);
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: var(--black-dark);
-    margin: 0;
-  }
-}
-
-/* Placeholder Content */
-.activity-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 3rem 2rem;
-  gap: 1rem;
-
-  &__text {
-    color: var(--black-light);
-    font-size: 1rem;
-    margin: 0;
-  }
-}
-
 /* Responsive Design */
 @media (max-width: 768px) {
   .admin-dashboard {
@@ -124,6 +169,26 @@
     &__stats {
       grid-template-columns: 1fr;
       gap: 1rem;
+    }
+  }
+
+  .welcome-card {
+    &__content {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    &__title {
+      font-size: 1.5rem;
+    }
+
+    &__icon {
+      width: 100px;
+      height: 100px;
+
+      i {
+        font-size: 3rem !important;
+      }
     }
   }
 

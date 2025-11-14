@@ -1,7 +1,28 @@
 <div class="admin-dashboard">
+  <!-- Welcome Section -->
+  <p-card class="welcome-card">
+    <div class="welcome-card__content">
+      <div class="welcome-card__text">
+        <div class="welcome-card__greeting">
+          <h1 class="welcome-card__title">
+            ¡Bienvenido, <span class="welcome-card__name">{{ welcomeName() }}</span>!
+          </h1>
+          <p class="welcome-card__subtitle">Panel de Administración Davivienda</p>
+        </div>
+        <p class="welcome-card__description">
+          Gestiona y administra los productos financieros de Davivienda. 
+          Desde este panel puedes supervisar ventas, productos, usuarios y todas las operaciones del sistema.
+        </p>
+      </div>
+      <div class="welcome-card__icon">
+        <i class="pi pi-shield"></i>
+      </div>
+    </div>
+  </p-card>
+
   <div class="admin-dashboard__header">
-    <h1 class="admin-dashboard__title">Dashboard</h1>
-    <p class="admin-dashboard__subtitle">Bienvenido al panel de administración</p>
+    <h2 class="admin-dashboard__title">Estadísticas Generales</h2>
+    <p class="admin-dashboard__subtitle">Resumen de actividad del sistema</p>
   </div>
 
   <div class="admin-dashboard__stats">
@@ -24,21 +45,6 @@
         </div>
       </p-card>
     }
-  </div>
-
-  <div class="admin-dashboard__content">
-    <p-card>
-      <ng-template pTemplate="header">
-        <div class="card-header">
-          <h2 class="card-header__title">Resumen de Actividad</h2>
-        </div>
-      </ng-template>
-      
-      <div class="activity-content">
-        <i class="pi pi-chart-bar" style="font-size: 3rem; color: var(--gray-main)"></i>
-        <p class="activity-content__text">Las estadísticas detalladas se mostrarán aquí</p>
-      </div>
-    </p-card>
   </div>
 </div>
 

@@ -1,5 +1,7 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, inject, computed, OnInit } from '@angular/core';
 import { CardModule } from 'primeng/card';
+import { AuthService } from '../../../core/services/auth.service';
+import { UserService } from '../../../core/services/user.service';
 
 /**
  * Estadística del dashboard.
@@ -14,7 +16,7 @@ interface DashboardStat {
 
 /**
  * Componente principal del dashboard administrativo.
- * Muestra estadísticas generales del sistema.
+ * Muestra estadísticas generales del sistema incluyendo usuarios registrados.
  */
 @Component({
   selector: 'app-admin-dashboard',
@@ -23,9 +25,24 @@ interface DashboardStat {
   templateUrl: './admin-dashboard.component.html',
   styleUrl: './admin-dashboard.component.scss'
 })
-export class AdminDashboardComponent {
+export class AdminDashboardComponent implements OnInit {
+  private readonly authService = inject(AuthService);
+  private readonly userService = inject(UserService);
+  
+  /** Usuario administrador actual */
+  readonly adminUser = this.authService.adminUser;
+  
+  /** Nombre de bienvenida del administrador */
+  readonly welcomeName = computed(() => {
+    const user = this.adminUser();
+    return user?.username || 'Administrador';
+  });
+  
+  /** Total de usuarios en el sistema */
+  private readonly totalUsers = signal<number>(0);
+  
   /** Estadísticas principales del dashboard */
-  readonly stats = signal<DashboardStat[]>([
+  readonly stats = computed<DashboardStat[]>(() => [
     {
       title: 'Total Productos',
       value: '24',
@@ -34,9 +51,9 @@ export class AdminDashboardComponent {
       bgColor: 'var(--blue-extralight)'
     },
     {
-      title: 'Pedidos Hoy',
-      value: '12',
-      icon: 'pi-shopping-bag',
+      title: 'Total Usuarios',
+      value: this.totalUsers().toString(),
+      icon: 'pi-users',
       color: 'var(--green-main)',
       bgColor: 'var(--green-extralight)'
     },
@@ -46,14 +63,27 @@ export class AdminDashboardComponent {
       icon: 'pi-chart-line',
       color: 'var(--orange-main)',
       bgColor: 'var(--orange-extralight)'
-    },
-    {
-      title: 'Usuarios Activos',
-      value: '156',
-      icon: 'pi-users',
-      color: 'var(--violet-main)',
-      bgColor: 'var(--violet-extralight)'
     }
   ]);
+
+  ngOnInit(): void {
+    this.loadUsers();
+  }
+
+  /**
+   * Carga el total de usuarios desde el backend.
+   */
+  private loadUsers(): void {
+    this.userService.getAllUsers().subscribe({
+      next: (response) => {
+        if (!response.failure && response.body) {
+          this.totalUsers.set(response.body.length);
+        }
+      },
+      error: (error) => {
+        console.error('Error al cargar usuarios:', error);
+      }
+    });
+  }
 }
 
