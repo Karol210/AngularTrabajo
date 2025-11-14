@@ -59,14 +59,14 @@ export class CheckoutModalComponent {
   paymentForm: FormGroup;
 
   /** Tipo de pago seleccionado */
-  selectedPaymentType = computed(() => this.paymentForm.get('paymentType')?.value);
+  selectedPaymentType = signal<PaymentType>('credito');
 
   constructor() {
     this.paymentForm = this.fb.group({
       paymentType: ['credito', [Validators.required]],
       bankName: [{ value: 'Banco Davivienda', disabled: true }],
       cardHolderName: ['', [Validators.required, Validators.minLength(3)]],
-      cardNumber: ['', [Validators.required, Validators.pattern(/^\d{16}$/)]],
+      cardNumber: ['', [Validators.required, Validators.pattern(/^\d{4}\s\d{4}\s\d{4}\s\d{4}$/)]],
       expirationDate: ['', [Validators.required, Validators.pattern(/^(0[1-9]|1[0-2])\/\d{2}$/)]],
       cvv: ['', [Validators.required, Validators.pattern(/^\d{3}$/)]],
       installments: [1, [Validators.required, Validators.min(1), Validators.max(12)]]
@@ -74,6 +74,8 @@ export class CheckoutModalComponent {
 
     // Listener para cambiar cuotas cuando cambia el tipo de pago
     this.paymentForm.get('paymentType')?.valueChanges.subscribe((type: PaymentType) => {
+      this.selectedPaymentType.set(type);
+      
       if (type === 'debito') {
         this.paymentForm.patchValue({ installments: 1 });
         this.paymentForm.get('installments')?.disable();
@@ -88,6 +90,7 @@ export class CheckoutModalComponent {
    */
   show(): void {
     this.visible.set(true);
+    this.selectedPaymentType.set('credito');
     this.paymentForm.reset({
       paymentType: 'credito',
       bankName: 'Banco Davivienda',
@@ -112,7 +115,7 @@ export class CheckoutModalComponent {
 
       const formValue = this.paymentForm.getRawValue();
       const cardData: CardData = {
-        cardNumber: formValue.cardNumber,
+        cardNumber: formValue.cardNumber.replace(/\s/g, ''), // Eliminar espacios
         cardHolderName: formValue.cardHolderName,
         expirationDate: formValue.expirationDate,
         cvv: formValue.cvv,
