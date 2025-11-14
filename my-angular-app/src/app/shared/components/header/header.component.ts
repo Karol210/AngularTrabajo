@@ -11,6 +11,7 @@ import { MenuItem } from 'primeng/api';
 import { CartService } from '../../../core/services/cart.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { AuthModalComponent } from '../auth-modal/auth-modal.component';
+import { CheckoutModalComponent } from '../checkout-modal/checkout-modal.component';
 import { CartItem } from '../../../core/models/product.model';
 
 /**
@@ -28,7 +29,8 @@ import { CartItem } from '../../../core/models/product.model';
     OverlayPanelModule,
     InputNumberModule,
     FormsModule,
-    AuthModalComponent
+    AuthModalComponent,
+    CheckoutModalComponent
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'
@@ -39,6 +41,9 @@ export class HeaderComponent implements OnDestroy {
 
   /** Referencia al modal de autenticación */
   authModal = viewChild.required(AuthModalComponent);
+
+  /** Referencia al modal de checkout */
+  checkoutModal = viewChild.required(CheckoutModalComponent);
 
   /** Referencia al panel del carrito */
   cartPanel = viewChild.required<OverlayPanel>('cartPanel');
@@ -166,11 +171,11 @@ export class HeaderComponent implements OnDestroy {
 
   /**
    * Procede a la compra.
-   * @todo Implementar modal de compra
+   * Cierra el panel del carrito y abre el modal de checkout.
    */
   proceedToCheckout(): void {
-    console.log('Proceder a compra - Modal pendiente');
     this.cartPanel().hide();
+    this.checkoutModal().show();
   }
 }
 

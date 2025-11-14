@@ -1,3 +1,11 @@
+---
+description: Sintaxis moderna de Angular 19 (control flow, signals, standalone components)
+globs:
+  - "**/*.ts"
+  - "**/*.html"
+alwaysApply: true
+---
+
 # Angular 19 - Componentes y Sintaxis Moderna
 
 ## Stack Tecnológico
@@ -94,7 +102,7 @@ private readonly router = inject(Router);
 private readonly messageService = inject(MessageService);
 ```
 
-**Ver:** `limpieza-codigo.md` para uso completo de readonly.
+**Ver:** `limpieza-codigo.mdc` para uso completo de readonly.
 
 ## 5. Formularios Reactivos
 
@@ -198,9 +206,8 @@ src/app/
 ---
 
 **Ver también:**
-- `limpieza-codigo.md` - readonly, tipos, imports
-- `espaciado-componentes.md` - Principio del Cuadrado
-- `documentacion-codigo.md` - JSDoc
+- `limpieza-codigo.mdc` - readonly, tipos, imports
+- `espaciado-componentes.mdc` - Principio del Cuadrado
+- `documentacion-codigo.mdc` - JSDoc
 
 **Versión:** Angular 19.x
-

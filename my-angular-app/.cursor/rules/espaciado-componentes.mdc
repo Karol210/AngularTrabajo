@@ -1,3 +1,11 @@
+---
+description: Principio del Cuadrado - padding lateral solo en el padre, hijos sin padding lateral
+globs:
+  - "**/*.scss"
+  - "**/*.css"
+alwaysApply: true
+---
+
 # Espaciado y Alineación en Componentes
 
 ## Regla General
@@ -19,9 +27,8 @@ El contenedor padre es un **cuadrado** que controla todo el espaciado lateral. L
 
 **Solo el padre tiene padding lateral → Todos los hijos se alinean automáticamente.**
 
-## Principios
+## Control de Padding
 
-### 1. Control de Padding
 El contenedor padre aplica padding lateral consistente. Los hijos NUNCA aplican su propio padding lateral.
 
 **✅ CORRECTO - Padre controla los lados:**
@@ -67,7 +74,7 @@ El contenedor padre aplica padding lateral consistente. Los hijos NUNCA aplican 
 }
 ```
 
-### 2. PrimeNG Cards - Enfoque del Cuadrado
+## PrimeNG Cards - Enfoque del Cuadrado
 
 Eliminar padding por defecto de PrimeNG:
 
@@ -106,7 +113,7 @@ Eliminar padding por defecto de PrimeNG:
 
 **Resultado:** Todos los elementos internos (header, form, footer) están perfectamente alineados porque el padre controla el espaciado lateral.
 
-### 3. Solo Espaciado Vertical en Hijos
+## Solo Espaciado Vertical en Hijos
 
 Los hijos solo deben controlar su espaciado vertical (arriba/abajo), nunca lateral:
 
@@ -129,60 +136,8 @@ Los hijos solo deben controlar su espaciado vertical (arriba/abajo), nunca later
 }
 ```
 
-## Ejemplo - Principio del Cuadrado
-
-```html
-<div class="login-card">
-  <div class="login-card__header">
-    <i class="pi pi-shield"></i>
-    <h2>Iniciar Sesión</h2>
-  </div>
-
-  <form class="login-card__form">
-    <div class="form-field">
-      <label>Usuario</label>
-      <input pInputText />
-    </div>
-    <div class="form-field">
-      <label>Contraseña</label>
-      <input pInputText type="password" />
-    </div>
-  </form>
-</div>
-```
-
-```scss
-.login-card {
-  padding: 1.5rem;  // ✅ PADRE = CUADRADO (controla lados)
-
-  &__header {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-    padding-top: 0.5rem;
-    padding-bottom: 1rem;  // ✅ Solo espaciado vertical
-  }
-
-  &__form {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    padding-top: 0.5rem;   // ✅ Solo espaciado vertical
-  }
-}
-
-.form-field {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  // Sin padding, alineado por el cuadrado padre
-}
-```
-
 ## Regla de Oro
 
 **1 Componente = 1 Cuadrado = 1 Padding Lateral**
 
 Si tienes múltiples valores de padding lateral en un mismo componente, estás violando el principio del cuadrado.
-

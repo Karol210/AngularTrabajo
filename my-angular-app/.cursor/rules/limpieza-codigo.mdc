@@ -1,3 +1,11 @@
+---
+description: Uso de readonly, tipos específicos, imports limpios, sin any
+globs:
+  - "**/*.ts"
+  - "**/*.scss"
+alwaysApply: true
+---
+
 # Limpieza de Código
 
 ## Regla General
@@ -119,7 +127,7 @@ import { CartService } from '../../core/services/cart.service';
 
 **Todos** los elementos públicos deben estar documentados con JSDoc.
 
-**Ver:** `documentacion-codigo.md` para guía completa de documentación.
+**Ver:** `documentacion-codigo.mdc` para guía completa de documentación.
 
 **Reglas básicas:**
 - Componentes, servicios y guards siempre documentados
@@ -128,18 +136,7 @@ import { CartService } from '../../core/services/cart.service';
 - Usar @todo para pendientes
 - Usar @deprecated para código obsoleto
 
-## 5. Comentarios en SCSS
-
-**Ver:** `documentacion-codigo.md` para guía completa de comentarios en SCSS.
-
-**Reglas básicas:**
-- Encabezado de archivo con descripción del componente
-- Comentar secciones principales
-- Indicar uso del Principio del Cuadrado
-- Comentar media queries
-- Comentar hacks o soluciones no obvias
-
-## 6. Uso de @todo Tags
+## 5. Uso de @todo Tags
 
 Para funcionalidad pendiente o mejoras futuras:
 
@@ -153,17 +150,6 @@ Para funcionalidad pendiente o mejoras futuras:
 @Injectable({ providedIn: 'root' })
 export class ProductService {
   /**
-   * Carga los productos desde el backend.
-   * Actualmente usa datos mock simulando un delay de red.
-   */
-  private loadProducts(): void {
-    // Simulación de llamada HTTP con delay
-    setTimeout(() => {
-      // ...
-    }, 1000);
-  }
-
-  /**
    * Navega a la página de login de usuario.
    * @todo Implementar modal de login
    */
@@ -173,7 +159,7 @@ export class ProductService {
 }
 ```
 
-## 7. Organización de Imports
+## 6. Organización de Imports
 
 Orden recomendado:
 
@@ -201,7 +187,7 @@ import { AppRoutes } from '../../../core/enums/app-routes.enum';
 import { StorageKeys } from '../../../core/enums/storage-keys.enum';
 ```
 
-## 8. Código No Usado
+## 7. Código No Usado
 
 ### Eliminar
 
@@ -230,17 +216,9 @@ private unusedProperty = '';
 // private sendNotification(): void {
 //   this.notificationService.send();
 // }
-
-// ✅ Método de desarrollo temporal
-/**
- * @internal Método de debugging, eliminar antes de producción
- */
-private debugState(): void {
-  console.log('State:', this.state());
-}
 ```
 
-## 9. Limpieza de CSS
+## 8. Limpieza de CSS
 
 ### Eliminar Clases No Usadas
 
@@ -248,10 +226,6 @@ private debugState(): void {
 // ❌ Clases que no se usan en el HTML
 .unused-class {
   color: red;
-}
-
-.another-unused {
-  padding: 1rem;
 }
 ```
 
@@ -278,5 +252,4 @@ private debugState(): void {
 - Sin console.log en producción
 - Sin ::ng-deep (usar estilos globales)
 
-**Ver:** `documentacion-codigo.md` para JSDoc completo.
-
+**Ver:** `documentacion-codigo.mdc` para JSDoc completo.

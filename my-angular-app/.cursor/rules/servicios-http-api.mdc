@@ -1,3 +1,11 @@
+---
+description: Estructura de servicios HTTP con tipado completo y manejo de errores
+globs:
+  - "**/*.service.ts"
+  - "**/models/**/*.ts"
+alwaysApply: true
+---
+
 # Servicios HTTP - Integración con API REST
 
 ## Regla General
@@ -139,43 +147,16 @@ class ProductsService {
 }
 ```
 
-## 8. Request Type
+## Reglas Clave
 
-**NO crear archivo `-request.ts` para:**
-- Endpoints GET sin body
-- Endpoints que solo usan path params o query params
-
-**SÍ crear archivo `-request.ts` para:**
-- POST con body
-- PUT con body
-- PATCH con body
-
-```typescript
-// product-request.ts (solo si se envían datos)
-export interface ProductRequest {
-  categoryId: number;
-  name: string;
-  description: string;
-  unitPrice: number;
-  taxRate: number;
-  active: boolean;
-}
-```
-
-## Checklist
-
-Antes de finalizar un servicio HTTP, verificar:
-
-- [ ] Response type creado (`-response.ts`)
-- [ ] Request type creado si aplica (`-request.ts`)
-- [ ] URL base usa `environment.apiUrl`
-- [ ] Método `getHeaders()` implementado
-- [ ] Token desde `StorageKeys` enum
-- [ ] Todos los métodos HTTP tipados con `ApiResponse<T>`
-- [ ] Todos los métodos tienen `catchError`
-- [ ] Documentación JSDoc en métodos públicos
-- [ ] Endpoints agrupados por dominio
+- Response type creado (`-response.ts`)
+- Request type creado si aplica (`-request.ts`)
+- URL base usa `environment.apiUrl`
+- Método `getHeaders()` implementado
+- Token desde `StorageKeys` enum
+- Todos los métodos HTTP tipados con `ApiResponse<T>`
+- Todos los métodos tienen `catchError`
+- Endpoints agrupados por dominio
 
 ---
 **Versión:** Angular 19.x
-

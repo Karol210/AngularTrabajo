@@ -1,3 +1,13 @@
+---
+description: NUNCA hardcodear colores, siempre usar variables CSS del proyecto
+globs:
+  - "**/*.scss"
+  - "**/*.css"
+  - "**/*.html"
+  - "**/*.ts"
+alwaysApply: true
+---
+
 # Variables CSS de Colores
 
 ## Regla General
@@ -31,32 +41,6 @@
 - `--orange-light: #FF872A`
 - `--orange-extralight: #FEEEE5`
 
-### Colores Secundarios
-
-**Amarillo (Yellow)**
-- `--yellow-dark: #FFAF05`
-- `--yellow-main: #FDBB11`
-- `--yellow-light: #FFD979`
-- `--yellow-extralight: #FEF8E7`
-
-**Violeta (Violet)**
-- `--violet-dark: #520DB1`
-- `--violet-main: #7E21FF`
-- `--violet-light: #9261FF`
-- `--violet-extralight: #F2E8FF`
-
-**Turquesa (Turquoise)**
-- `--turquoise-dark: #008988`
-- `--turquoise-main: #05C3C1`
-- `--turquoise-light: #3BFAF8`
-- `--turquoise-extralight: #E5F9F8`
-
-**Dorado (Gold)**
-- `--gold-dark: #A86900`
-- `--gold-main: #D18800`
-- `--gold-light: #D8AB58`
-- `--gold-extralight: #FBEECE`
-
 ### Colores Neutros
 
 **Negro (Black)**
@@ -71,13 +55,6 @@
 - `--gray-main: #EDEEF0`
 - `--gray-light: #F2F3F5`
 - `--gray-extralight: #F7F7F7`
-
-**Gris Azulado (Gray Blue)**
-- `--gray-blue-dark: #21262E`
-- `--gray-blue-main: #343A45`
-- `--gray-blue-light: #4B5C6F`
-- `--gray-blue-extralight: #C7D2DA`
-- `--gray-blue-thin: #F4F6F7`
 
 **Blanco y Fondo**
 - `--white: #FFFFFF`
@@ -105,7 +82,6 @@
 .card {
   background: rgb(255, 255, 255);
   color: rgba(64, 64, 64, 1);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 h1 {
@@ -166,32 +142,6 @@ h1 {
 .primary-button {
   background-color: var(--red-main);
   color: var(--white);
-}
-```
-
-## Uso en TypeScript (Cuando sea Necesario)
-
-### ❌ INCORRECTO
-
-```typescript
-@Component({...})
-export class MyComponent {
-  backgroundColor = '#E1111C';
-  textColor = '#FFFFFF';
-}
-```
-
-### ✅ CORRECTO
-
-```typescript
-@Component({...})
-export class MyComponent {
-  // Referenciar variables CSS
-  backgroundColor = 'var(--red-main)';
-  textColor = 'var(--white)';
-  
-  // O mejor, usar clases CSS
-  buttonClass = 'primary-button';
 }
 ```
 
@@ -258,55 +208,6 @@ Cada familia de color tiene 4 niveles:
 3. **light**: Hover states, elementos secundarios
 4. **extralight**: Fondos, badges, highlights
 
-```scss
-// Ejemplo: Card con estado
-.card {
-  background: var(--white);
-  border: 1px solid var(--blue-main);
-  
-  &__header {
-    background: var(--blue-extralight);
-    color: var(--blue-dark);
-  }
-  
-  &__badge {
-    background: var(--blue-light);
-    color: var(--white);
-  }
-}
-```
-
-## Temas con PrimeNG
-
-Mapear variables de PrimeNG a nuestras variables:
-
-```scss
-// En styles.scss después de importar PrimeNG
-:root {
-  // Sobrescribir variables de PrimeNG
-  --primary-color: var(--red-main);
-  --primary-color-text: var(--white);
-  --text-color: var(--black-main);
-  --surface-ground: var(--background-body);
-}
-```
-
-## Transparencias
-
-Las transparencias se pueden combinar con variables:
-
-```scss
-.overlay {
-  // Permitido: agregar alpha a variables
-  background-color: rgba(var(--red-main-rgb), 0.8);
-}
-
-// Definir versión RGB si es necesario
-:root {
-  --red-main-rgb: 225, 17, 28;
-}
-```
-
 ## Excepción: Transparencias
 
 Solo permitido usar valores sin variables para transparencias:
@@ -321,4 +222,3 @@ Solo permitido usar valores sin variables para transparencias:
 ## Regla Crítica
 
 **NUNCA hardcodear colores. Siempre usar variables CSS del proyecto.**
-

@@ -1,3 +1,10 @@
+---
+description: Usar enums/constantes, NO valores hardcodeados (rutas, storage keys, etc)
+globs:
+  - "**/*.ts"
+alwaysApply: true
+---
+
 # Uso de Enumeradores y Constantes
 
 ## Regla General
@@ -128,10 +135,6 @@ export const Messages = {
     INVALID_CREDENTIALS: 'Credenciales inválidas',
     SERVER_ERROR: 'Error del servidor',
     NETWORK_ERROR: 'Error de conexión'
-  },
-  WARNING: {
-    UNSAVED_CHANGES: 'Tienes cambios sin guardar',
-    SESSION_EXPIRING: 'Tu sesión está por expirar'
   }
 } as const;
 
@@ -177,22 +180,7 @@ export const AppConstants = {
 const pageSize = AppConstants.PAGINATION.DEFAULT_PAGE_SIZE;
 ```
 
-## 6. Severidades de PrimeNG
-
-Cuando se usan valores de severidad múltiples veces, usar enum:
-
-```typescript
-export enum PrimeNGSeverity {
-  PRIMARY = 'primary',
-  SUCCESS = 'success',
-  DANGER = 'danger'
-}
-
-// Uso
-severity = PrimeNGSeverity.PRIMARY;
-```
-
-## 7. Organización de Enums y Constantes
+## 6. Organización de Enums y Constantes
 
 Estructura recomendada:
 
@@ -212,94 +200,6 @@ src/app/
 │       └── validation.constants.ts
 ```
 
-## 8. Tipos de Exportación
-
-### Para valores que no cambian:
-```typescript
-export const Config = {
-  API_URL: 'https://api.example.com',
-  APP_NAME: 'My App'
-} as const;
-```
-
-### Para valores de dominio:
-```typescript
-export enum OrderStatus {
-  PENDING = 'pending',
-  PROCESSING = 'processing',
-  COMPLETED = 'completed',
-  CANCELLED = 'cancelled'
-}
-```
-
-### Para tipos de unión cuando no se necesita enum:
-```typescript
-export type Theme = 'light' | 'dark' | 'auto';
-export type Language = 'es' | 'en' | 'fr';
-```
-
-## 9. Validaciones
-
-**❌ INCORRECTO:**
-```typescript
-Validators.minLength(3)
-Validators.maxLength(50)
-Validators.pattern(/^[a-zA-Z0-9]+$/)
-```
-
-**✅ CORRECTO:**
-```typescript
-// validation.constants.ts
-export const ValidationConstants = {
-  USERNAME: {
-    MIN_LENGTH: 3,
-    MAX_LENGTH: 20,
-    PATTERN: /^[a-zA-Z0-9_]+$/
-  },
-  PASSWORD: {
-    MIN_LENGTH: 8,
-    MAX_LENGTH: 128,
-    PATTERN: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/
-  },
-  EMAIL: {
-    MAX_LENGTH: 255,
-    PATTERN: /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-  }
-} as const;
-
-// Uso
-Validators.minLength(ValidationConstants.USERNAME.MIN_LENGTH)
-Validators.pattern(ValidationConstants.USERNAME.PATTERN)
-```
-
-## 10. HTTP Status Codes
-
-**❌ INCORRECTO:**
-```typescript
-if (response.status === 200) { }
-if (error.status === 404) { }
-```
-
-**✅ CORRECTO:**
-```typescript
-// http-status.enum.ts
-export enum HttpStatus {
-  OK = 200,
-  CREATED = 201,
-  NO_CONTENT = 204,
-  BAD_REQUEST = 400,
-  UNAUTHORIZED = 401,
-  FORBIDDEN = 403,
-  NOT_FOUND = 404,
-  INTERNAL_SERVER_ERROR = 500
-}
-
-// Uso
-if (response.status === HttpStatus.OK) { }
-if (error.status === HttpStatus.NOT_FOUND) { }
-```
-
 ## Regla de Oro
 
 **Si un valor se usa más de una vez, o representa un concepto del dominio, debe ser un enum o constante.**
-
