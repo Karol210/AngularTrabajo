@@ -5,14 +5,17 @@
 export interface ProductResponse {
   id: number;
   categoryName: string;
-  categoryDescription: string;
+  categoryDescription?: string;
   name: string;
   description: string;
-  unitPrice: number;
-  taxRate: number;
-  taxAmount: number;
+  unitValue: number;
+  iva: number;
+  ivaAmount: number;
   totalPrice: number;
   active: boolean;
-  imageUrl?: string; // Opcional, algunos productos pueden no tener imagen
+  imageUrl?: string;
+  estadoProductoId?: number;
+  categoryId?: number;
+  createdAt?: string;
 }
 

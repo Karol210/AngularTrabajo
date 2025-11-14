@@ -56,17 +56,17 @@ export class ProductService {
    */
   private mapProductResponseToProduct(response: ProductResponse): Product {
     return {
-      id: response.id,
-      name: response.name,
-      description: response.description,
-      categoryName: response.categoryName,
-      categoryDescription: response.categoryDescription,
-      unitPrice: response.unitPrice,
-      taxRate: response.taxRate,
-      taxAmount: response.taxAmount,
-      totalPrice: response.totalPrice,
+      id: response.id ?? 0,
+      name: response.name ?? '',
+      description: response.description ?? '',
+      categoryName: response.categoryName ?? '',
+      categoryDescription: response.categoryDescription ?? '',
+      unitPrice: response.unitValue ?? 0,
+      taxRate: response.iva ?? 0,
+      taxAmount: response.ivaAmount ?? 0,
+      totalPrice: response.totalPrice ?? 0,
       imageUrl: response.imageUrl,
-      active: response.active
+      active: response.active ?? false
     };
   }
 

@@ -47,8 +47,9 @@
                 <p class="product-card__description">{{ product.description }}</p>
                 <div class="product-card__footer">
                   <div class="product-card__prices">
-                    <span class="product-card__price">{{ formatPrice(product.totalPrice) }}</span>
-                    <span class="product-card__unit-price">Base: {{ formatPrice(product.unitPrice) }}</span>
+                    <span class="product-card__price-total">{{ formatPrice(product.totalPrice) }}</span>
+                    <span class="product-card__price-tax">IVA: {{ formatPrice(product.taxAmount) }}</span>
+                    <span class="product-card__price-base">Precio base: {{ formatPrice(product.unitPrice) }}</span>
                   </div>
                   
                   @if (product.active) {

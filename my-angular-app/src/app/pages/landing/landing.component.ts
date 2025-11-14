@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, viewChild } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { SkeletonModule } from 'primeng/skeleton';
@@ -7,6 +7,7 @@ import { ToastModule } from 'primeng/toast';
 import { HeaderComponent } from '../../shared/components/header/header.component';
 import { ProductService } from '../../core/services/product.service';
 import { CartService } from '../../core/services/cart.service';
+import { AuthService } from '../../core/services/auth.service';
 import { Product } from '../../core/models/product.model';
 
 /**
@@ -29,7 +30,11 @@ import { Product } from '../../core/models/product.model';
 export class LandingComponent {
   private readonly productService = inject(ProductService);
   private readonly cartService = inject(CartService);
+  private readonly authService = inject(AuthService);
   private readonly messageService = inject(MessageService);
+
+  /** Referencia al componente del header */
+  headerComponent = viewChild.required(HeaderComponent);
 
   /** Signal reactivo con la lista de productos */
   readonly products = this.productService.products;
@@ -39,9 +44,16 @@ export class LandingComponent {
 
   /**
    * Agrega un producto al carrito y muestra notificación de éxito.
+   * Si el usuario no está autenticado, muestra el modal de login.
    * @param product - Producto a agregar al carrito
    */
   addToCart(product: Product): void {
+    // Verificar si el usuario está autenticado
+    if (!this.authService.isUserAuthenticated()) {
+      this.headerComponent().navigateToLogin();
+      return;
+    }
+
     this.cartService.addToCart(product, 1);
     this.messageService.add({
       severity: 'success',
@@ -56,7 +68,10 @@ export class LandingComponent {
    * @param price - Precio a formatear
    * @returns Precio formateado (ej: "$ 2.500.000")
    */
-  formatPrice(price: number): string {
+  formatPrice(price: number | undefined | null): string {
+    if (price === undefined || price === null || isNaN(price)) {
+      return '$0';
+    }
     return new Intl.NumberFormat('es-CO', {
       style: 'currency',
       currency: 'COP',
