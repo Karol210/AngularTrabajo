@@ -6,6 +6,7 @@ import { StorageKeys } from '../enums/storage-keys.enum';
 import { AppRoutes } from '../enums/app-routes.enum';
 import { User, LoginCredentials, AuthResponse, UserLoginCredentials, UserLoginResponse } from '../models/user.model';
 import { environment } from '../../../environments/environment';
+import { StorageService } from './storage.service';
 
 /**
  * Servicio para gestionar la autenticación de administradores y usuarios.
@@ -17,6 +18,7 @@ import { environment } from '../../../environments/environment';
 export class AuthService {
   private router = inject(Router);
   private http = inject(HttpClient);
+  private storage = inject(StorageService);
   private adminUserState = signal<User | null>(null);
   private userState = signal<string | null>(null);
   
@@ -48,22 +50,17 @@ export class AuthService {
   }
 
   private loadAdminFromStorage(): void {
-    const token = sessionStorage.getItem(StorageKeys.ADMIN_TOKEN);
-    const userJson = sessionStorage.getItem(StorageKeys.ADMIN_USER);
+    const token = this.storage.getItem<string>(StorageKeys.ADMIN_TOKEN);
+    const user = this.storage.getItem<User>(StorageKeys.ADMIN_USER);
     
-    if (token && userJson) {
-      try {
-        const user = JSON.parse(userJson);
-        this.adminUserState.set(user);
-      } catch (error) {
-        this.clearAdminSession();
-      }
+    if (token && user) {
+      this.adminUserState.set(user);
     }
   }
 
   private loadUserFromStorage(): void {
-    const token = sessionStorage.getItem(StorageKeys.USER_TOKEN);
-    const username = sessionStorage.getItem(StorageKeys.USER_NAME);
+    const token = this.storage.getItem<string>(StorageKeys.USER_TOKEN);
+    const username = this.storage.getItem<string>(StorageKeys.USER_NAME);
     
     if (token && username) {
       this.userState.set(username);
@@ -93,8 +90,8 @@ export class AuthService {
             }
           };
 
-          sessionStorage.setItem(StorageKeys.ADMIN_TOKEN, mockResponse.token);
-          sessionStorage.setItem(StorageKeys.ADMIN_USER, JSON.stringify(mockResponse.user));
+          this.storage.setItem(StorageKeys.ADMIN_TOKEN, mockResponse.token);
+          this.storage.setItem(StorageKeys.ADMIN_USER, mockResponse.user);
           this.adminUserState.set(mockResponse.user);
           
           resolve(true);
@@ -115,8 +112,8 @@ export class AuthService {
   }
 
   private clearAdminSession(): void {
-    sessionStorage.removeItem(StorageKeys.ADMIN_TOKEN);
-    sessionStorage.removeItem(StorageKeys.ADMIN_USER);
+    this.storage.removeItem(StorageKeys.ADMIN_TOKEN);
+    this.storage.removeItem(StorageKeys.ADMIN_USER);
     this.adminUserState.set(null);
   }
 
@@ -132,8 +129,8 @@ export class AuthService {
       credentials
     ).pipe(
       tap(response => {
-        sessionStorage.setItem(StorageKeys.USER_TOKEN, response.token);
-        sessionStorage.setItem(StorageKeys.USER_NAME, response.username);
+        this.storage.setItem(StorageKeys.USER_TOKEN, response.token);
+        this.storage.setItem(StorageKeys.USER_NAME, response.username);
         this.userState.set(response.username);
       })
     );
@@ -144,8 +141,8 @@ export class AuthService {
    * Limpia token y datos de usuario de sessionStorage.
    */
   userLogout(): void {
-    sessionStorage.removeItem(StorageKeys.USER_TOKEN);
-    sessionStorage.removeItem(StorageKeys.USER_NAME);
+    this.storage.removeItem(StorageKeys.USER_TOKEN);
+    this.storage.removeItem(StorageKeys.USER_NAME);
     this.userState.set(null);
   }
 }
