@@ -1,5 +1,6 @@
-import { Component, inject, viewChild } from '@angular/core';
+import { Component, inject, viewChild, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { delay, switchMap, Subject, debounceTime } from 'rxjs';
 import { ButtonModule } from 'primeng/button';
 import { BadgeModule } from 'primeng/badge';
 import { MenuModule } from 'primeng/menu';
@@ -32,7 +33,7 @@ import { CartItem } from '../../../core/models/product.model';
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnDestroy {
   private readonly cartService = inject(CartService);
   private readonly authService = inject(AuthService);
 
@@ -56,6 +57,22 @@ export class HeaderComponent {
 
   /** Indica si hay un usuario autenticado */
   readonly isAuthenticated = this.authService.isUserAuthenticated;
+
+  /** Subject para manejar cambios de cantidad con debounce */
+  private quantityChange$ = new Subject<{ productId: number; quantity: number }>();
+
+  constructor() {
+    // Suscribirse a los cambios de cantidad con debounce
+    this.quantityChange$.pipe(
+      debounceTime(800) // Espera 800ms después del último cambio
+    ).subscribe(({ productId, quantity }) => {
+      this.executeUpdateQuantity(productId, quantity);
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.quantityChange$.complete();
+  }
 
   /**
    * Abre el modal de autenticación.
@@ -85,16 +102,50 @@ export class HeaderComponent {
 
   /**
    * Elimina un producto del carrito.
+   * Encadena: delete → delay 1s → summary
    */
   removeFromCart(productId: number): void {
-    this.cartService.removeFromCart(productId);
+    // Encadenar: removeFromCart → delay → getCartSummary
+    this.cartService.removeFromCart(productId).pipe(
+      delay(1000), // Espera 1 segundo después de eliminar
+      switchMap(() => this.cartService.getCartSummary()) // Luego obtiene el resumen
+    ).subscribe({
+      next: (summaryResponse) => {
+        // Actualiza el estado del carrito
+        this.cartService.updateCartState(summaryResponse.body);
+      },
+      error: (error) => {
+        console.error('Error al eliminar producto:', error);
+      }
+    });
   }
 
   /**
-   * Actualiza la cantidad de un producto en el carrito.
+   * Emite un cambio de cantidad al Subject para procesar con debounce.
+   * Evita llamados excesivos mientras el usuario está cambiando la cantidad.
    */
   updateQuantity(productId: number, quantity: number): void {
-    this.cartService.updateQuantity(productId, quantity);
+    this.quantityChange$.next({ productId, quantity });
+  }
+
+  /**
+   * Ejecuta la actualización de cantidad en el backend.
+   * Encadena: add → delay 1s → summary
+   */
+  private executeUpdateQuantity(productId: number, quantity: number): void {
+    // Encadenar: updateQuantity → delay → getCartSummary
+    this.cartService.updateQuantity(productId, quantity).pipe(
+      delay(1000), // Espera 1 segundo después de actualizar
+      switchMap(() => this.cartService.getCartSummary()) // Luego obtiene el resumen
+    ).subscribe({
+      next: (summaryResponse) => {
+        // Actualiza el estado del carrito
+        this.cartService.updateCartState(summaryResponse.body);
+      },
+      error: (error) => {
+        console.error('Error al actualizar cantidad:', error);
+      }
+    });
   }
 
   /**

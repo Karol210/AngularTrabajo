@@ -17,6 +17,7 @@ export interface Product {
 }
 
 export interface CartItem {
+  id: number; // ID del item en el carrito (cartItemId del backend)
   product: Product;
   quantity: number;
 }

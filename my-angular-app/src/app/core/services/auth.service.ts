@@ -1,4 +1,4 @@
-import { Injectable, signal, computed, inject } from '@angular/core';
+import { Injectable, signal, computed, inject, Injector } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
@@ -19,6 +19,7 @@ export class AuthService {
   private router = inject(Router);
   private http = inject(HttpClient);
   private storage = inject(StorageService);
+  private injector = inject(Injector);
   private adminUserState = signal<User | null>(null);
   private userState = signal<string | null>(null);
   
@@ -138,12 +139,34 @@ export class AuthService {
 
   /**
    * Cierra la sesión del usuario regular.
-   * Limpia token y datos de usuario de sessionStorage.
+   * Limpia token, datos de usuario y carrito.
    */
   userLogout(): void {
     this.storage.removeItem(StorageKeys.USER_TOKEN);
     this.storage.removeItem(StorageKeys.USER_NAME);
     this.userState.set(null);
+    
+    // Limpiar el carrito usando lazy injection para evitar dependencia circular
+    import('./cart.service').then(({ CartService }) => {
+      const cartService = this.injector.get(CartService);
+      cartService.clearCart();
+    });
+  }
+
+  /**
+   * Obtiene el token del usuario regular autenticado.
+   * @returns Token JWT del usuario o null si no está autenticado
+   */
+  getUserToken(): string | null {
+    return this.storage.getItem<string>(StorageKeys.USER_TOKEN);
+  }
+
+  /**
+   * Obtiene el token del administrador autenticado.
+   * @returns Token JWT del administrador o null si no está autenticado
+   */
+  getAdminToken(): string | null {
+    return this.storage.getItem<string>(StorageKeys.ADMIN_TOKEN);
   }
 }
 

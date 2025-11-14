@@ -97,7 +97,7 @@ export class ProductService {
    */
   listAllProducts(): Observable<ApiResponse<ProductResponse[]>> {
     return this.http.get<ApiResponse<ProductResponse[]>>(
-      `${this.baseUrl}/list-all`,
+      `${this.baseUrl}/list-active`,
       { headers: this.getHeaders() }
     ).pipe(
       catchError(error => {

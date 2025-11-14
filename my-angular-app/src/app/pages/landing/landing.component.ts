@@ -1,4 +1,5 @@
 import { Component, inject, viewChild } from '@angular/core';
+import { delay, switchMap } from 'rxjs';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { SkeletonModule } from 'primeng/skeleton';
@@ -45,6 +46,7 @@ export class LandingComponent {
   /**
    * Agrega un producto al carrito y muestra notificación de éxito.
    * Si el usuario no está autenticado, muestra el modal de login.
+   * Encadena: add → delay 1s → summary
    * @param product - Producto a agregar al carrito
    */
   addToCart(product: Product): void {
@@ -54,12 +56,31 @@ export class LandingComponent {
       return;
     }
 
-    this.cartService.addToCart(product, 1);
-    this.messageService.add({
-      severity: 'success',
-      summary: 'Producto agregado',
-      detail: `${product.name} agregado al carrito`,
-      life: 3000
+    // Encadenar: addToCart → delay → getCartSummary
+    this.cartService.addToCart(product, 1).pipe(
+      delay(1000), // Espera 1 segundo después de agregar
+      switchMap(() => this.cartService.getCartSummary()) // Luego obtiene el resumen
+    ).subscribe({
+      next: (summaryResponse) => {
+        // Actualiza el estado del carrito
+        this.cartService.updateCartState(summaryResponse.body);
+        
+        // Muestra notificación de éxito
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Producto agregado',
+          detail: `${product.name} agregado al carrito`,
+          life: 3000
+        });
+      },
+      error: (error) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'No se pudo agregar el producto al carrito',
+          life: 3000
+        });
+      }
     });
   }
 
