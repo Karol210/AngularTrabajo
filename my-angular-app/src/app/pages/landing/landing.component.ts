@@ -23,7 +23,6 @@ import { Messages, MessageTitles } from '../../shared/constants/messages.constan
     ButtonModule,
     CardModule,
     SkeletonModule,
-    ToastModule,
     HeaderComponent
   ],
   templateUrl: './landing.component.html',

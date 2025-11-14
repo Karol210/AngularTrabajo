@@ -15,7 +15,13 @@
           styleClass="header__button" />
       } @else {
         <div class="header__user-info">
-          <span class="header__greeting">Hola, {{ currentUser() }}</span>
+          <button 
+            class="header__user-name"
+            (click)="openProfileModal()"
+            title="Ver mi perfil">
+            <i class="pi pi-user"></i>
+            <span>Hola, {{ userProfile()?.nombre || currentUser() }}</span>
+          </button>
           <p-button
             label="Cerrar Sesión"
             icon="pi pi-sign-out"
@@ -40,6 +46,9 @@
 
 <!-- Modal de autenticación -->
 <app-auth-modal />
+
+<!-- Modal de perfil de usuario -->
+<app-user-profile-modal />
 
 <!-- Panel del carrito -->
 <p-overlayPanel #cartPanel styleClass="cart-overlay">

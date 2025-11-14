@@ -6,6 +6,7 @@ import { UserResponse } from '../models/user-response';
 import { ApiResponse } from '../models/api-response.model';
 import { StorageKeys } from '../enums/storage-keys.enum';
 import { ApiEndpoints } from '../enums/api-endpoints.enum';
+import { StorageService } from './storage.service';
 import { environment } from '../../../environments/environment';
 
 /**
@@ -17,6 +18,7 @@ import { environment } from '../../../environments/environment';
 })
 export class UserService {
   private readonly http = inject(HttpClient);
+  private readonly storage = inject(StorageService);
 
   /**
    * Genera los headers necesarios para las peticiones HTTP.
@@ -25,7 +27,7 @@ export class UserService {
    */
   private getHeaders(): HttpHeaders {
     let headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    const token = sessionStorage.getItem(StorageKeys.ADMIN_TOKEN);
+    const token = this.storage.getItem<string>(StorageKeys.ADMIN_TOKEN);
     if (token) {
       headers = headers.set('Authorization', `Bearer ${token}`);
     }

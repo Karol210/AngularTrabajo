@@ -5,7 +5,7 @@ import { Observable, tap } from 'rxjs';
 import { StorageKeys } from '../enums/storage-keys.enum';
 import { AppRoutes } from '../enums/app-routes.enum';
 import { ApiEndpoints } from '../enums/api-endpoints.enum';
-import { User, LoginCredentials, AuthResponse, UserLoginCredentials, UserLoginResponse } from '../models/user.model';
+import { User, LoginCredentials, AuthResponse, UserLoginCredentials, UserLoginResponse, UserProfile } from '../models/user.model';
 import { environment } from '../../../environments/environment';
 import { StorageService } from './storage.service';
 
@@ -22,6 +22,7 @@ export class AuthService {
   private readonly storage = inject(StorageService);
   private readonly adminUserState = signal<User | null>(null);
   private readonly userState = signal<string | null>(null);
+  private readonly userProfileState = signal<UserProfile | null>(null);
   
   /**
    * Signal reactivo con el usuario administrador actual.
@@ -34,6 +35,12 @@ export class AuthService {
    * Null si no hay sesión activa.
    */
   readonly currentUser = this.userState.asReadonly();
+
+  /**
+   * Signal reactivo con el perfil completo del usuario autenticado.
+   * Null si no hay sesión activa.
+   */
+  readonly userProfile = this.userProfileState.asReadonly();
   
   /**
    * Signal reactivo que indica si hay un administrador autenticado.
@@ -62,9 +69,14 @@ export class AuthService {
   private loadUserFromStorage(): void {
     const token = this.storage.getItem<string>(StorageKeys.USER_TOKEN);
     const username = this.storage.getItem<string>(StorageKeys.USER_NAME);
+    const profile = this.storage.getItem<UserProfile>(StorageKeys.USER_PROFILE);
     
     if (token && username) {
       this.userState.set(username);
+    }
+
+    if (profile) {
+      this.userProfileState.set(profile);
     }
   }
 
@@ -119,7 +131,9 @@ export class AuthService {
       tap(response => {
         this.storage.setItem(StorageKeys.USER_TOKEN, response.token);
         this.storage.setItem(StorageKeys.USER_NAME, response.username);
+        this.storage.setItem(StorageKeys.USER_PROFILE, response.userProfile);
         this.userState.set(response.username);
+        this.userProfileState.set(response.userProfile);
       })
     );
   }
@@ -131,7 +145,9 @@ export class AuthService {
   userLogout(): void {
     this.storage.removeItem(StorageKeys.USER_TOKEN);
     this.storage.removeItem(StorageKeys.USER_NAME);
+    this.storage.removeItem(StorageKeys.USER_PROFILE);
     this.userState.set(null);
+    this.userProfileState.set(null);
   }
 
   /**

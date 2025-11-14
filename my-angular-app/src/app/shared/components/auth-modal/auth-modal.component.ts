@@ -157,7 +157,7 @@ export class AuthModalComponent {
           this.messageService.add({
             severity: 'success',
             summary: MessageTitles.SUCCESS,
-            detail: Messages.SUCCESS.LOGIN_SUCCESS,
+            detail: response.message,
             life: 3000
           });
           this.hide();

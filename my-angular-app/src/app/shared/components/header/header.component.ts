@@ -10,6 +10,7 @@ import { CartService } from '../../../core/services/cart.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { AuthModalComponent } from '../auth-modal/auth-modal.component';
 import { CheckoutModalComponent } from '../checkout-modal/checkout-modal.component';
+import { UserProfileModalComponent } from '../user-profile-modal/user-profile-modal.component';
 
 /**
  * Componente del header principal de la aplicación.
@@ -26,7 +27,8 @@ import { CheckoutModalComponent } from '../checkout-modal/checkout-modal.compone
     InputNumberModule,
     FormsModule,
     AuthModalComponent,
-    CheckoutModalComponent
+    CheckoutModalComponent,
+    UserProfileModalComponent
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'
@@ -40,6 +42,9 @@ export class HeaderComponent implements OnDestroy {
 
   /** Referencia al modal de checkout */
   checkoutModal = viewChild.required(CheckoutModalComponent);
+
+  /** Referencia al modal de perfil de usuario */
+  profileModal = viewChild.required(UserProfileModalComponent);
 
   /** Referencia al panel del carrito */
   cartPanel = viewChild.required<OverlayPanel>('cartPanel');
@@ -55,6 +60,9 @@ export class HeaderComponent implements OnDestroy {
 
   /** Nombre del usuario autenticado */
   readonly currentUser = this.authService.currentUser;
+
+  /** Perfil completo del usuario autenticado */
+  readonly userProfile = this.authService.userProfile;
 
   /** Indica si hay un usuario autenticado */
   readonly isAuthenticated = this.authService.isUserAuthenticated;
@@ -80,6 +88,13 @@ export class HeaderComponent implements OnDestroy {
    */
   navigateToLogin(): void {
     this.authModal().show();
+  }
+
+  /**
+   * Abre el modal de perfil del usuario.
+   */
+  openProfileModal(): void {
+    this.profileModal().show();
   }
 
   /**

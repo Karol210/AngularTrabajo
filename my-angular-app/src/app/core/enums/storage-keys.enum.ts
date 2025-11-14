@@ -4,6 +4,7 @@ export enum StorageKeys {
   CART_ITEMS = 'cart_items',
   USER_TOKEN = 'user_token',
   USER_DATA = 'user_data',
-  USER_NAME = 'user_name'
+  USER_NAME = 'user_name',
+  USER_PROFILE = 'user_profile'
 }
 

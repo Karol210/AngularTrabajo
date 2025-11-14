@@ -8,6 +8,7 @@ import { ProductUpdateRequest } from '../models/product-update-request';
 import { ApiResponse } from '../models/api-response.model';
 import { ApiEndpoints } from '../enums/api-endpoints.enum';
 import { StorageKeys } from '../enums/storage-keys.enum';
+import { StorageService } from './storage.service';
 import { environment } from '../../../environments/environment';
 
 /**
@@ -19,6 +20,7 @@ import { environment } from '../../../environments/environment';
 })
 export class ProductService {
   private readonly http = inject(HttpClient);
+  private readonly storage = inject(StorageService);
   private readonly productsState = signal<Product[]>([]);
   private readonly loadingState = signal(false);
   private readonly baseUrl = `${environment.apiUrl}/api/v1/products`;
@@ -43,8 +45,8 @@ export class ProductService {
       'Content-Type': 'application/json'
     });
 
-    // Obtener el token del sessionStorage
-    const token = sessionStorage.getItem(StorageKeys.ADMIN_TOKEN);
+    // Obtener el token del storage service
+    const token = this.storage.getItem<string>(StorageKeys.ADMIN_TOKEN);
     if (token) {
       headers = headers.set('Authorization', `Bearer ${token}`);
     }

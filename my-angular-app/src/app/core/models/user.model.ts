@@ -29,6 +29,20 @@ export interface UserLoginCredentials {
 }
 
 /**
+ * Perfil completo del usuario autenticado.
+ */
+export interface UserProfile {
+  nombre: string;
+  apellido: string;
+  correo: string;
+  tipoDocumento: string;
+  codigoDocumento: string;
+  numeroDocumento: string;
+  estado: string;
+  roles: string[];
+}
+
+/**
  * Respuesta del servicio de login de usuario.
  */
 export interface UserLoginResponse {
@@ -36,5 +50,6 @@ export interface UserLoginResponse {
   username: string;
   message: string;
   expiresIn: number;
+  userProfile: UserProfile;
 }
 

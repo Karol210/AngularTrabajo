@@ -39,6 +39,11 @@ export class AdminLayoutComponent {
       routerLink: ['/admin/products']
     },
     {
+      label: 'Usuarios',
+      icon: 'pi pi-users',
+      routerLink: ['/admin/users']
+    },
+    {
       label: 'Pedidos',
       icon: 'pi pi-shopping-bag',
       routerLink: ['/admin/orders']
