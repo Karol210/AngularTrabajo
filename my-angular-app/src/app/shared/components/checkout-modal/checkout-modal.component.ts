@@ -1,5 +1,4 @@
-import { Component, inject, signal, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, signal } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
@@ -12,12 +11,12 @@ import { PaymentService } from '../../../core/services/payment.service';
 import { PaymentType, PaymentTypeOption, CardData } from '../../../core/models/payment.model';
 
 /**
- * Modal de checkout para procesar el pago
+ * Modal de checkout para procesar pagos con tarjeta.
  */
 @Component({
   selector: 'app-checkout-modal',
+  standalone: true,
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     DialogModule,
     ButtonModule,
@@ -34,31 +33,22 @@ export class CheckoutModalComponent {
   private readonly paymentService = inject(PaymentService);
   private readonly messageService = inject(MessageService);
 
-  /** Signal que controla la visibilidad del modal */
+  // Estado del modal
   visible = signal(false);
-
-  /** Signal que indica si se está procesando el pago */
   processing = signal(false);
-
-  /** Items del carrito */
+  
+  // Datos del carrito
   readonly cartItems = this.cartService.cartItems;
-
-  /** Total del carrito */
   readonly totalPrice = this.cartService.totalPrice;
-
-  /** Opciones de tipo de pago */
+  
+  // Opciones de pago
   paymentTypes: PaymentTypeOption[] = [
     { id: 'debito', label: 'Tarjeta Débito' },
     { id: 'credito', label: 'Tarjeta Crédito' }
   ];
-
-  /** Opciones de cuotas (1-12) */
+  
   installmentOptions = Array.from({ length: 12 }, (_, i) => ({ value: i + 1, label: `${i + 1} cuota${i > 0 ? 's' : ''}` }));
-
-  /** Formulario de pago */
   paymentForm: FormGroup;
-
-  /** Tipo de pago seleccionado */
   selectedPaymentType = signal<PaymentType>('credito');
 
   constructor() {
@@ -72,7 +62,6 @@ export class CheckoutModalComponent {
       installments: [1, [Validators.required, Validators.min(1), Validators.max(12)]]
     });
 
-    // Listener para cambiar cuotas cuando cambia el tipo de pago
     this.paymentForm.get('paymentType')?.valueChanges.subscribe((type: PaymentType) => {
       this.selectedPaymentType.set(type);
       
@@ -85,9 +74,7 @@ export class CheckoutModalComponent {
     });
   }
 
-  /**
-   * Abre el modal de checkout
-   */
+  // Abre el modal de checkout
   show(): void {
     this.visible.set(true);
     this.selectedPaymentType.set('credito');
@@ -98,24 +85,20 @@ export class CheckoutModalComponent {
     });
   }
 
-  /**
-   * Cierra el modal
-   */
+  // Cierra el modal
   hide(): void {
     this.visible.set(false);
     this.paymentForm.reset();
   }
 
-  /**
-   * Procesa el pago
-   */
+  // Procesa el pago
   onPaymentSubmit(): void {
     if (this.paymentForm.valid) {
       this.processing.set(true);
 
       const formValue = this.paymentForm.getRawValue();
       const cardData: CardData = {
-        cardNumber: formValue.cardNumber.replace(/\s/g, ''), // Eliminar espacios
+        cardNumber: formValue.cardNumber.replace(/\s/g, ''),
         cardHolderName: formValue.cardHolderName,
         expirationDate: formValue.expirationDate,
         cvv: formValue.cvv,
@@ -133,7 +116,6 @@ export class CheckoutModalComponent {
             life: 5000
           });
           this.hide();
-          // Limpiar el carrito después del pago exitoso
           this.cartService.clearCart();
         },
         error: (error) => {
@@ -152,9 +134,7 @@ export class CheckoutModalComponent {
     }
   }
 
-  /**
-   * Formatea el precio en pesos colombianos
-   */
+  // Formatea precios en pesos colombianos
   formatPrice(price: number): string {
     return new Intl.NumberFormat('es-CO', {
       style: 'currency',
@@ -163,9 +143,7 @@ export class CheckoutModalComponent {
     }).format(price);
   }
 
-  /**
-   * Marca todos los controles como touched para mostrar validaciones
-   */
+  // Marca todos los campos como tocados
   private markFormGroupTouched(formGroup: FormGroup): void {
     Object.keys(formGroup.controls).forEach(key => {
       const control = formGroup.get(key);

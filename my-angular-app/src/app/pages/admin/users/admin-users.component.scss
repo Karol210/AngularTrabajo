@@ -435,3 +435,68 @@
   }
 }
 
+// Modal de Edición de Usuario
+::ng-deep {
+  .edit-user-modal {
+    .p-dialog-header {
+      border-bottom: 1px solid var(--gray-dark-1);
+      
+      .modal-header {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        
+        i {
+          color: var(--red-main);
+          font-size: 1.5rem;
+        }
+        
+        .modal-title {
+          font-size: 1.25rem;
+          font-weight: 700;
+          color: var(--black-dark);
+        }
+      }
+    }
+    
+    .p-dialog-content {
+      padding: 1.5rem;
+    }
+  }
+}
+
+// Formulario de Edición
+.form-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  
+  .form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    
+    label {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--black-dark);
+    }
+    
+    .error-message {
+      color: var(--red-main);
+      font-size: 0.75rem;
+      margin-top: 0.25rem;
+    }
+  }
+}
+
+// Footer del Modal
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--gray-dark-1);
+}
+

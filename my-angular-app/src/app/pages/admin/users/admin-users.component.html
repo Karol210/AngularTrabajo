@@ -1,3 +1,5 @@
+<p-confirmDialog />
+
 <div class="admin-users-container">
   <!-- Header -->
   <div class="header">
@@ -108,16 +110,6 @@
             <td class="td-actions">
               <div class="action-buttons">
                 <p-button 
-                  icon="pi pi-eye"
-                  [rounded]="true"
-                  severity="info"
-                  [text]="true"
-                  (onClick)="viewUser(user)"
-                  pTooltip="Ver detalles"
-                  tooltipPosition="top"
-                  styleClass="btn-action btn-view" />
-
-                <p-button 
                   icon="pi pi-pencil"
                   [rounded]="true"
                   severity="help"
@@ -128,16 +120,6 @@
                   styleClass="btn-action btn-edit" />
 
                 <p-button 
-                  icon="pi pi-users"
-                  [rounded]="true"
-                  severity="secondary"
-                  [text]="true"
-                  (onClick)="manageRoles(user)"
-                  pTooltip="Gestionar roles"
-                  tooltipPosition="top"
-                  styleClass="btn-action btn-roles" />
-
-                <p-button 
                   [icon]="user.status === 'Activo' ? 'pi pi-power-off' : 'pi pi-check'"
                   [rounded]="true"
                   [severity]="user.status === 'Activo' ? 'warn' : 'info'"
@@ -146,16 +128,6 @@
                   [pTooltip]="user.status === 'Activo' ? 'Desactivar usuario' : 'Activar usuario'"
                   tooltipPosition="top"
                   styleClass="btn-action btn-toggle" />
-
-                <p-button 
-                  icon="pi pi-trash"
-                  [rounded]="true"
-                  severity="danger"
-                  [text]="true"
-                  (onClick)="deleteUser(user)"
-                  pTooltip="Eliminar usuario"
-                  tooltipPosition="top"
-                  styleClass="btn-action btn-delete" />
               </div>
             </td>
           </tr>
@@ -174,4 +146,119 @@
     </div>
   }
 </div>
+
+<!-- Modal de Edición de Usuario -->
+<p-dialog 
+  [visible]="showEditModal()"
+  (visibleChange)="showEditModal.set($event)"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [style]="{width: '500px'}"
+  [closable]="true"
+  styleClass="edit-user-modal">
+  
+  <ng-template pTemplate="header">
+    <div class="modal-header">
+      <i class="pi pi-user-edit"></i>
+      <span class="modal-title">Editar Usuario</span>
+    </div>
+  </ng-template>
+
+  <form [formGroup]="editForm" (ngSubmit)="onEditSubmit()">
+    <div class="form-content">
+      <!-- Nombre -->
+      <div class="form-field">
+        <label for="nombre">Nombre *</label>
+        <input 
+          id="nombre"
+          type="text"
+          pInputText
+          formControlName="nombre"
+          placeholder="Ingrese el nombre" />
+        @if (editForm.get('nombre')?.invalid && editForm.get('nombre')?.touched) {
+          <small class="error-message">El nombre es requerido (mínimo 2 caracteres)</small>
+        }
+      </div>
+
+      <!-- Apellido -->
+      <div class="form-field">
+        <label for="apellido">Apellido *</label>
+        <input 
+          id="apellido"
+          type="text"
+          pInputText
+          formControlName="apellido"
+          placeholder="Ingrese el apellido" />
+        @if (editForm.get('apellido')?.invalid && editForm.get('apellido')?.touched) {
+          <small class="error-message">El apellido es requerido (mínimo 2 caracteres)</small>
+        }
+      </div>
+
+      <!-- Email -->
+      <div class="form-field">
+        <label for="email">Email *</label>
+        <input 
+          id="email"
+          type="email"
+          pInputText
+          formControlName="email"
+          placeholder="correo@ejemplo.com" />
+        @if (editForm.get('email')?.invalid && editForm.get('email')?.touched) {
+          <small class="error-message">Ingrese un email válido</small>
+        }
+      </div>
+
+      <!-- Tipo de Documento -->
+      <div class="form-field">
+        <label for="tipoDocumento">Tipo de Documento *</label>
+        <p-dropdown
+          id="tipoDocumento"
+          formControlName="tipoDocumento"
+          [options]="documentTypes()"
+          optionLabel="nombre"
+          optionValue="codigo"
+          placeholder="Seleccione tipo de documento"
+          [loading]="loadingDocumentTypes()"
+          appendTo="body" />
+        @if (editForm.get('tipoDocumento')?.invalid && editForm.get('tipoDocumento')?.touched) {
+          <small class="error-message">Seleccione un tipo de documento</small>
+        }
+      </div>
+
+      <!-- Número de Documento -->
+      <div class="form-field">
+        <label for="numeroDocumento">Número de Documento *</label>
+        <input 
+          id="numeroDocumento"
+          type="text"
+          pInputText
+          formControlName="numeroDocumento"
+          placeholder="12345678" />
+        @if (editForm.get('numeroDocumento')?.invalid && editForm.get('numeroDocumento')?.touched) {
+          <small class="error-message">Ingrese un número de documento válido (solo números)</small>
+        }
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <p-button 
+        label="Cancelar"
+        icon="pi pi-times"
+        [outlined]="true"
+        severity="secondary"
+        (onClick)="closeEditModal()"
+        [disabled]="submitting()"
+        type="button" />
+      
+      <p-button 
+        label="Guardar Cambios"
+        icon="pi pi-check"
+        severity="success"
+        [loading]="submitting()"
+        [disabled]="editForm.invalid"
+        type="submit" />
+    </div>
+  </form>
+</p-dialog>
 

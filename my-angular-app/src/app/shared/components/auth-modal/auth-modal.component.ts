@@ -1,4 +1,4 @@
-import { Component, inject, signal, output } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { tap } from 'rxjs';
 import { DialogModule } from 'primeng/dialog';
@@ -15,8 +15,7 @@ import { RegisterRequest } from '../../../core/models/register.model';
 import { Messages, MessageTitles } from '../../constants/messages.constants';
 
 /**
- * Componente modal para autenticación de usuarios.
- * Maneja tanto login como registro de usuarios.
+ * Modal de autenticación con login y registro de usuarios.
  */
 @Component({
   selector: 'app-auth-modal',
@@ -40,28 +39,17 @@ export class AuthModalComponent {
   private readonly cartService = inject(CartService);
   private readonly messageService = inject(MessageService);
 
-  /** Signal que controla la visibilidad del modal */
+  // Estado del modal
   readonly visible = signal(false);
-  
-  /** Signal que controla qué vista se muestra (login o registro) */
   readonly isLoginView = signal(true);
-  
-  /** Signal que indica si se está procesando una petición */
   readonly loading = signal(false);
-
-  /** Tipos de documentos disponibles */
+  
+  // Tipos de documentos para el registro
   readonly documentTypes = this.documentTypeService.documentTypes;
-  
-  /** Indica si los tipos de documentos están cargando */
   readonly documentTypesLoading = this.documentTypeService.loading;
-
-  /** Evento emitido cuando el login es exitoso */
-  readonly loginSuccess = output<void>();
-
-  /** Formulario de login */
-  readonly loginForm: FormGroup;
   
-  /** Formulario de registro */
+  // Formularios reactivos
+  readonly loginForm: FormGroup;
   readonly registerForm: FormGroup;
 
   constructor() {
@@ -81,9 +69,7 @@ export class AuthModalComponent {
     }, { validators: this.passwordMatchValidator });
   }
 
-  /**
-   * Validador personalizado para verificar que las contraseñas coincidan.
-   */
+  // Valida que las contraseñas coincidan
   private passwordMatchValidator(form: FormGroup) {
     const password = form.get('password')?.value;
     const confirmPassword = form.get('confirmPassword')?.value;
@@ -96,59 +82,44 @@ export class AuthModalComponent {
     return null;
   }
 
-  /**
-   * Abre el modal en la vista de login.
-   */
+  // Abre el modal en vista de login
   show(): void {
     this.visible.set(true);
     this.isLoginView.set(true);
     this.resetForms();
   }
 
-  /**
-   * Cierra el modal.
-   */
+  // Cierra el modal
   hide(): void {
     this.visible.set(false);
     this.resetForms();
   }
 
-  /**
-   * Cambia a la vista de registro.
-   */
+  // Cambia a vista de registro
   switchToRegister(): void {
     this.isLoginView.set(false);
     this.resetForms();
   }
 
-  /**
-   * Cambia a la vista de login.
-   */
+  // Cambia a vista de login
   switchToLogin(): void {
     this.isLoginView.set(true);
     this.resetForms();
   }
 
-  /**
-   * Resetea ambos formularios.
-   */
+  // Limpia los formularios
   private resetForms(): void {
     this.loginForm.reset();
     this.registerForm.reset();
   }
 
-  /**
-   * Maneja el submit del formulario de login.
-   * Encadena: login → cargar carrito
-   */
+  // Procesa el login del usuario
   onLoginSubmit(): void {
     if (this.loginForm.valid) {
       this.loading.set(true);
       
-      // Encadenar operaciones en el componente
       this.authService.userLogin(this.loginForm.value).pipe(
         tap(() => {
-          // Después del login exitoso, cargar el carrito del usuario
           this.cartService.refreshCart();
         })
       ).subscribe({
@@ -161,7 +132,6 @@ export class AuthModalComponent {
             life: 3000
           });
           this.hide();
-          this.loginSuccess.emit();
         },
         error: (error) => {
           this.loading.set(false);
@@ -179,16 +149,13 @@ export class AuthModalComponent {
     }
   }
 
-  /**
-   * Maneja el submit del formulario de registro.
-   */
+  // Procesa el registro del usuario
   onRegisterSubmit(): void {
     if (this.registerForm.valid) {
       this.loading.set(true);
       
       const { confirmPassword, ...registerData } = this.registerForm.value;
       
-      // El roleId se asigna por defecto a 2 (usuario normal)
       const request: RegisterRequest = {
         ...registerData,
         roleIds: [2]
@@ -221,9 +188,7 @@ export class AuthModalComponent {
     }
   }
 
-  /**
-   * Marca todos los controles de un formulario como touched para mostrar validaciones.
-   */
+  // Marca todos los campos como tocados para mostrar errores
   private markFormGroupTouched(formGroup: FormGroup): void {
     Object.keys(formGroup.controls).forEach(key => {
       const control = formGroup.get(key);

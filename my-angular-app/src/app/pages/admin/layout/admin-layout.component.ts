@@ -6,8 +6,7 @@ import { MenuItem } from 'primeng/api';
 import { AuthService } from '../../../core/services/auth.service';
 
 /**
- * Layout principal del área de administración.
- * Contiene sidebar con navegación y área de contenido.
+ * Layout con sidebar y navegación para el área de administración.
  */
 @Component({
   selector: 'app-admin-layout',
@@ -23,10 +22,8 @@ import { AuthService } from '../../../core/services/auth.service';
 export class AdminLayoutComponent {
   private readonly authService = inject(AuthService);
 
-  /** Usuario administrador actual */
+  // Usuario y menú de navegación
   readonly adminUser = this.authService.adminUser;
-
-  /** Items del menú de navegación */
   readonly menuItems: MenuItem[] = [
     {
       label: 'Dashboard',
@@ -58,9 +55,7 @@ export class AdminLayoutComponent {
     }
   ];
 
-  /**
-   * Cierra la sesión del administrador y redirige al login.
-   */
+  // Cierra sesión del administrador
   logout(): void {
     this.authService.adminLogout();
   }

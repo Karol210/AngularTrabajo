@@ -13,8 +13,7 @@ import { LoginCredentials } from '../../../core/models/user.model';
 import { Messages, MessageTitles } from '../../../shared/constants/messages.constants';
 
 /**
- * Componente de login para administradores.
- * Maneja autenticación y redirección al dashboard.
+ * Login de administrador.
  */
 @Component({
   selector: 'app-admin-login',
@@ -36,19 +35,14 @@ export class AdminLoginComponent {
   private readonly router = inject(Router);
   private readonly messageService = inject(MessageService);
 
-  /** Signal que indica si el login está en proceso */
+  // Estado del formulario
   readonly loading = signal(false);
-
-  /** Formulario reactivo de login con validaciones */
   readonly loginForm = this.fb.group({
     username: ['', [Validators.required, Validators.minLength(3)]],
     password: ['', [Validators.required, Validators.minLength(6)]]
   });
 
-  /**
-   * Procesa el envío del formulario de login.
-   * Valida credenciales y redirige al dashboard si es exitoso.
-   */
+  // Procesa el login del administrador
   onSubmit(): void {
     if (this.loginForm.invalid) {
       this.markFormGroupTouched();
@@ -84,10 +78,7 @@ export class AdminLoginComponent {
     });
   }
 
-  /**
-   * Marca todos los campos del formulario como tocados.
-   * Útil para mostrar errores de validación al intentar enviar.
-   */
+  // Marca todos los campos como tocados
   private markFormGroupTouched(): void {
     Object.keys(this.loginForm.controls).forEach(key => {
       const control = this.loginForm.get(key);

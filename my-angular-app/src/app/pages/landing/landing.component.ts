@@ -13,8 +13,7 @@ import { Product } from '../../core/models/product.model';
 import { Messages, MessageTitles } from '../../shared/constants/messages.constants';
 
 /**
- * Componente principal del landing page.
- * Muestra productos destacados y permite agregarlos al carrito.
+ * Página principal con catálogo de productos.
  */
 @Component({
   selector: 'app-landing',
@@ -34,38 +33,27 @@ export class LandingComponent {
   private readonly authService = inject(AuthService);
   private readonly messageService = inject(MessageService);
 
-  /** Referencia al componente del header */
+  // Referencia al header
   headerComponent = viewChild.required(HeaderComponent);
-
-  /** Signal reactivo con la lista de productos */
-  readonly products = this.productService.products;
   
-  /** Signal reactivo que indica si los productos están cargando */
+  // Estado de productos
+  readonly products = this.productService.products;
   readonly loading = this.productService.loading;
 
-  /**
-   * Agrega un producto al carrito y muestra notificación de éxito.
-   * Si el usuario no está autenticado, muestra el modal de login.
-   * Encadena: add → delay 1s → summary
-   * @param product - Producto a agregar al carrito
-   */
+  // Agrega un producto al carrito
   addToCart(product: Product): void {
-    // Verificar si el usuario está autenticado
     if (!this.authService.isUserAuthenticated()) {
       this.headerComponent().navigateToLogin();
       return;
     }
 
-    // Encadenar: addToCart → delay → getCartSummary
     this.cartService.addToCart(product, 1).pipe(
-      delay(1000), // Espera 1 segundo después de agregar
-      switchMap(() => this.cartService.getCartSummary()) // Luego obtiene el resumen
+      delay(1000),
+      switchMap(() => this.cartService.getCartSummary())
     ).subscribe({
       next: (summaryResponse) => {
-        // Actualiza el estado del carrito
         this.cartService.updateCartState(summaryResponse.body);
         
-        // Muestra notificación de éxito
         this.messageService.add({
           severity: 'success',
           summary: MessageTitles.SUCCESS,
@@ -84,11 +72,7 @@ export class LandingComponent {
     });
   }
 
-  /**
-   * Formatea un precio numérico al formato de moneda colombiana (COP).
-   * @param price - Precio a formatear
-   * @returns Precio formateado (ej: "$ 2.500.000")
-   */
+  // Formatea precios en pesos colombianos
   formatPrice(price: number | undefined | null): string {
     if (price === undefined || price === null || isNaN(price)) {
       return '$0';

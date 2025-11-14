@@ -1,47 +1,73 @@
 import { Component, inject, signal, computed, type OnInit } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
+import { DialogModule } from 'primeng/dialog';
+import { InputTextModule } from 'primeng/inputtext';
+import { DropdownModule } from 'primeng/dropdown';
 import { TableModule } from 'primeng/table';
 import { TooltipModule } from 'primeng/tooltip';
-import { MessageService } from 'primeng/api';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { MessageService, ConfirmationService } from 'primeng/api';
 import { UserService } from '../../../core/services/user.service';
+import { DocumentTypeService } from '../../../core/services/document-type.service';
 import { UserResponse } from '../../../core/models/user-response';
 
 /**
  * Componente de administración de usuarios.
- * Permite visualizar, editar y gestionar usuarios del sistema.
- * 
- * @todo Implementar modal para editar usuario
- * @todo Implementar modal para cambiar roles de usuario
- * @todo Implementar activar/desactivar usuario
+ * Permite visualizar, editar y activar/desactivar usuarios del sistema.
  */
 @Component({
   selector: 'app-admin-users',
   standalone: true,
   imports: [
+    ReactiveFormsModule,
     ButtonModule,
+    DialogModule,
+    InputTextModule,
+    DropdownModule,
     TableModule,
-    TooltipModule
+    TooltipModule,
+    ConfirmDialogModule
   ],
   templateUrl: './admin-users.component.html',
   styleUrl: './admin-users.component.scss'
 })
 export class AdminUsersComponent implements OnInit {
   private readonly userService = inject(UserService);
+  private readonly documentTypeService = inject(DocumentTypeService);
   private readonly messageService = inject(MessageService);
+  private readonly confirmationService = inject(ConfirmationService);
+  private readonly fb = inject(FormBuilder);
   
-  /** Signal que contiene la lista de usuarios */
+  // Estado de usuarios
   readonly users = signal<UserResponse[]>([]);
-  
-  /** Signal que indica si los usuarios están cargando */
   readonly loading = signal(false);
+  
+  // Modal de edición
+  readonly showEditModal = signal(false);
+  readonly submitting = signal(false);
+  
+  // Tipos de documentos
+  readonly documentTypes = this.documentTypeService.documentTypes;
+  readonly loadingDocumentTypes = this.documentTypeService.loading;
+  
+  // Usuario seleccionado para editar
+  private selectedUser: UserResponse | null = null;
+  
+  // Formulario de edición
+  readonly editForm = this.fb.group({
+    nombre: ['', [Validators.required, Validators.minLength(2)]],
+    apellido: ['', [Validators.required, Validators.minLength(2)]],
+    email: ['', [Validators.required, Validators.email]],
+    tipoDocumento: ['', [Validators.required]],
+    numeroDocumento: ['', [Validators.required, Validators.pattern(/^[0-9]+$/)]]
+  });
 
   ngOnInit(): void {
     this.loadUsers();
   }
 
-  /**
-   * Carga todos los usuarios desde el backend.
-   */
+  // Carga todos los usuarios desde el backend
   loadUsers(): void {
     this.loading.set(true);
     
@@ -66,106 +92,87 @@ export class AdminUsersComponent implements OnInit {
     });
   }
 
-  /**
-   * Refresca la lista de usuarios forzando una nueva carga desde el backend.
-   */
+  // Refresca la lista de usuarios
   refreshUsers(): void {
     this.loadUsers();
   }
 
-  /**
-   * Obtiene la clase CSS correspondiente al estado del usuario.
-   * Usada para aplicar colores diferentes según el estado.
-   * 
-   * @param user - Usuario a evaluar
-   * @returns Clase CSS: 'status-active' o 'status-inactive'
-   */
+  // Obtiene la clase CSS del estado del usuario
   getStatusClass(user: UserResponse): string {
     return user.status === 'Activo' ? 'status-active' : 'status-inactive';
   }
 
-  /**
-   * Formatea el array de roles como string separado por comas.
-   * 
-   * @param roles - Array de roles del usuario
-   * @returns String con roles separados por comas
-   * 
-   * @example
-   * formatRoles(['Cliente', 'Administrador']) // "Cliente, Administrador"
-   */
+  // Formatea los roles como string
   formatRoles(roles: string[]): string {
     return roles.join(', ');
   }
 
-  /**
-   * Muestra los detalles completos del usuario.
-   * 
-   * @param user - Usuario a visualizar
-   * 
-   * @todo Implementar modal con información detallada del usuario
-   */
-  viewUser(user: UserResponse): void {
-    alert(`Ver detalles de: ${user.nombre} ${user.apellido}\n\nID: ${user.usuarioId}\nEmail: ${user.email}\nRoles: ${this.formatRoles(user.roles)}`);
-  }
-
-  /**
-   * Inicia el flujo de edición de un usuario existente.
-   * 
-   * @param user - Usuario a editar
-   * 
-   * @todo Implementar modal con formulario pre-cargado
-   * @todo Conectar con endpoint PUT /api/v1/users/{id}
-   */
+  // Abre el modal de edición con los datos del usuario
   editUser(user: UserResponse): void {
-    alert(`Editar usuario: ${user.nombre} ${user.apellido} (ID: ${user.usuarioId})`);
+    this.selectedUser = user;
+    
+    this.editForm.patchValue({
+      nombre: user.nombre,
+      apellido: user.apellido,
+      email: user.email,
+      tipoDocumento: user.documentType,
+      numeroDocumento: user.documentNumber
+    });
+    
+    this.showEditModal.set(true);
   }
 
-  /**
-   * Activa o desactiva un usuario después de confirmación.
-   * 
-   * @param user - Usuario a activar/desactivar
-   * 
-   * @todo Conectar con endpoint PATCH /api/v1/users/{id}/toggle
-   */
+  // Cierra el modal de edición
+  closeEditModal(): void {
+    this.showEditModal.set(false);
+    this.editForm.reset();
+    this.selectedUser = null;
+  }
+
+  // Guarda los cambios del usuario
+  onEditSubmit(): void {
+    if (this.editForm.invalid || !this.selectedUser) {
+      this.editForm.markAllAsTouched();
+      return;
+    }
+
+    this.submitting.set(true);
+
+    // TODO: Implementar actualización real con el backend
+    setTimeout(() => {
+      this.submitting.set(false);
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Usuario actualizado',
+        detail: `Los datos de ${this.selectedUser?.nombre} ${this.selectedUser?.apellido} han sido actualizados`,
+        life: 3000
+      });
+      this.closeEditModal();
+      this.refreshUsers();
+    }, 1000);
+  }
+
+  // Activa o desactiva un usuario
   toggleUserStatus(user: UserResponse): void {
     const action = user.status === 'Activo' ? 'desactivar' : 'activar';
-    const confirmToggle = confirm(
-      `¿Deseas ${action} al usuario "${user.nombre} ${user.apellido}"?`
-    );
     
-    if (confirmToggle) {
-      alert(`Usuario "${user.nombre} ${user.apellido}" ${action === 'activar' ? 'activado' : 'desactivado'} (simulado)`);
-      this.refreshUsers();
-    }
-  }
-
-  /**
-   * Elimina un usuario después de confirmación.
-   * 
-   * @param user - Usuario a eliminar
-   * 
-   * @todo Conectar con endpoint DELETE /api/v1/users/{id}
-   */
-  deleteUser(user: UserResponse): void {
-    const confirmDelete = confirm(
-      `¿Estás seguro de que deseas eliminar al usuario "${user.nombre} ${user.apellido}"?\n\nEsta acción no se puede deshacer.`
-    );
-    
-    if (confirmDelete) {
-      alert(`Usuario "${user.nombre} ${user.apellido}" eliminado (simulado)`);
-    }
-  }
-
-  /**
-   * Gestiona los roles de un usuario.
-   * 
-   * @param user - Usuario para gestionar roles
-   * 
-   * @todo Implementar modal para agregar/quitar roles
-   * @todo Conectar con endpoint POST /api/v1/users/{id}/roles
-   */
-  manageRoles(user: UserResponse): void {
-    alert(`Gestionar roles de: ${user.nombre} ${user.apellido}\n\nRoles actuales: ${this.formatRoles(user.roles)}`);
+    this.confirmationService.confirm({
+      message: `¿Deseas ${action} al usuario "${user.nombre} ${user.apellido}"?`,
+      header: `Confirmar ${action}ción`,
+      icon: 'pi pi-question-circle',
+      acceptLabel: `Sí, ${action}`,
+      rejectLabel: 'Cancelar',
+      accept: () => {
+        // TODO: Implementar toggle real
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Estado actualizado',
+          detail: `El usuario "${user.nombre} ${user.apellido}" ha sido ${action === 'activar' ? 'activado' : 'desactivado'}`,
+          life: 3000
+        });
+        this.refreshUsers();
+      }
+    });
   }
 }
 

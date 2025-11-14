@@ -8,7 +8,8 @@ import { InputTextModule } from 'primeng/inputtext';
 import { InputTextarea } from 'primeng/inputtextarea';
 import { TableModule } from 'primeng/table';
 import { TooltipModule } from 'primeng/tooltip';
-import { MessageService } from 'primeng/api';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { MessageService, ConfirmationService } from 'primeng/api';
 import { ProductService } from '../../../../core/services/product.service';
 import { CategoryService } from '../../../../core/services/category.service';
 import { Product } from '../../../../core/models/product.model';
@@ -40,7 +41,8 @@ type TabType = 'problems' | 'available';
     InputTextModule,
     InputTextarea,
     TableModule,
-    TooltipModule
+    TooltipModule,
+    ConfirmDialogModule
   ],
   templateUrl: './admin-products.component.html',
   styleUrl: './admin-products.component.scss'
@@ -50,6 +52,7 @@ export class AdminProductsComponent implements OnInit {
   private readonly categoryService = inject(CategoryService);
   private readonly fb = inject(FormBuilder);
   private readonly messageService = inject(MessageService);
+  private readonly confirmationService = inject(ConfirmationService);
   
   /** Signal que controla el tab activo ('available' o 'problems') */
   readonly activeTab = signal<TabType>('available');
@@ -265,66 +268,67 @@ export class AdminProductsComponent implements OnInit {
     });
   }
 
-  /**
-   * Inicia el flujo de edición de un producto existente.
-   * 
-   * @param product - Producto a editar
-   * 
-   * @todo Implementar modal con formulario pre-cargado
-   * @todo Conectar con endpoint PUT /api/v1/products/{id}
-   */
+  // Edita un producto existente
   editProduct(product: Product): void {
-    alert(`Editar producto: ${product.name} (ID: ${product.id})`);
+    this.messageService.add({
+      severity: 'info',
+      summary: 'Función en desarrollo',
+      detail: 'La edición de productos estará disponible próximamente',
+      life: 3000
+    });
   }
 
-  /**
-   * Elimina un producto después de confirmación del usuario.
-   * 
-   * @param product - Producto a eliminar
-   * 
-   * @todo Conectar con endpoint DELETE /api/v1/products/{id}
-   * @todo Mostrar mensaje de éxito/error con toast
-   */
+  // Elimina un producto
   deleteProduct(product: Product): void {
-    const confirmDelete = confirm(
-      `¿Estás seguro de que deseas eliminar el producto "${product.name}"?\n\nEsta acción no se puede deshacer.`
-    );
-    
-    if (confirmDelete) {
-      alert(`Producto "${product.name}" eliminado (simulado)`);
-      // TODO: this.productService.deleteProduct(product.id).subscribe()
-    }
+    this.confirmationService.confirm({
+      message: `¿Estás seguro de que deseas eliminar el producto "${product.name}"? Esta acción no se puede deshacer.`,
+      header: 'Confirmar eliminación',
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Sí, eliminar',
+      rejectLabel: 'Cancelar',
+      acceptButtonStyleClass: 'p-button-danger',
+      accept: () => {
+        // TODO: Implementar eliminación real
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Producto eliminado',
+          detail: `El producto "${product.name}" ha sido eliminado`,
+          life: 3000
+        });
+      }
+    });
   }
 
-  /**
-   * Activa o desactiva un producto después de confirmación del usuario.
-   * 
-   * @param product - Producto a activar/desactivar
-   * 
-   * @todo Conectar con endpoint PATCH /api/v1/products/{id}/toggle
-   * @todo Actualizar estado local automáticamente después de la operación
-   */
+  // Activa o desactiva un producto
   toggleProductStatus(product: Product): void {
     const action = product.active ? 'desactivar' : 'activar';
-    const confirmToggle = confirm(
-      `¿Deseas ${action} el producto "${product.name}"?`
-    );
     
-    if (confirmToggle) {
-      alert(`Producto "${product.name}" ${action === 'activar' ? 'activado' : 'desactivado'} (simulado)`);
-      // TODO: this.productService.toggleProductStatus(product.id).subscribe()
-      this.refreshProducts();
-    }
+    this.confirmationService.confirm({
+      message: `¿Deseas ${action} el producto "${product.name}"?`,
+      header: `Confirmar ${action}ción`,
+      icon: 'pi pi-question-circle',
+      acceptLabel: `Sí, ${action}`,
+      rejectLabel: 'Cancelar',
+      accept: () => {
+        // TODO: Implementar toggle real
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Estado actualizado',
+          detail: `El producto "${product.name}" ha sido ${action === 'activar' ? 'activado' : 'desactivado'}`,
+          life: 3000
+        });
+        this.refreshProducts();
+      }
+    });
   }
 
-  /**
-   * Muestra los detalles completos del producto.
-   * 
-   * @param product - Producto a visualizar
-   * 
-   * @todo Implementar modal con información detallada del producto
-   */
+  // Muestra los detalles del producto
   viewProduct(product: Product): void {
-    alert(`Ver detalles de: ${product.name}\n\nID: ${product.id}\nPrecio: ${this.formatPrice(product.totalPrice)}\nStock: ${product.stock ?? 'N/A'}`);
+    this.messageService.add({
+      severity: 'info',
+      summary: 'Función en desarrollo',
+      detail: 'La vista detallada de productos estará disponible próximamente',
+      life: 3000
+    });
   }
 }

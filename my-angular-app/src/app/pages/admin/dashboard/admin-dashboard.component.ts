@@ -3,9 +3,6 @@ import { CardModule } from 'primeng/card';
 import { AuthService } from '../../../core/services/auth.service';
 import { UserService } from '../../../core/services/user.service';
 
-/**
- * Estadística del dashboard.
- */
 interface DashboardStat {
   title: string;
   value: string;
@@ -15,8 +12,7 @@ interface DashboardStat {
 }
 
 /**
- * Componente principal del dashboard administrativo.
- * Muestra estadísticas generales del sistema incluyendo usuarios registrados.
+ * Dashboard administrativo con estadísticas del sistema.
  */
 @Component({
   selector: 'app-admin-dashboard',
@@ -29,19 +25,15 @@ export class AdminDashboardComponent implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly userService = inject(UserService);
   
-  /** Usuario administrador actual */
+  // Usuario administrador actual
   readonly adminUser = this.authService.adminUser;
-  
-  /** Nombre de bienvenida del administrador */
   readonly welcomeName = computed(() => {
     const user = this.adminUser();
     return user?.username || 'Administrador';
   });
   
-  /** Total de usuarios en el sistema */
+  // Estadísticas del dashboard
   private readonly totalUsers = signal<number>(0);
-  
-  /** Estadísticas principales del dashboard */
   readonly stats = computed<DashboardStat[]>(() => [
     {
       title: 'Total Productos',
@@ -70,9 +62,7 @@ export class AdminDashboardComponent implements OnInit {
     this.loadUsers();
   }
 
-  /**
-   * Carga el total de usuarios desde el backend.
-   */
+  // Carga el total de usuarios
   private loadUsers(): void {
     this.userService.getAllUsers().subscribe({
       next: (response) => {

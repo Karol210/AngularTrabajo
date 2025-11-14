@@ -4,7 +4,7 @@ import { ButtonModule } from 'primeng/button';
 import { AuthService } from '../../../core/services/auth.service';
 
 /**
- * Modal para mostrar el perfil completo del usuario autenticado.
+ * Modal con información completa del perfil de usuario.
  */
 @Component({
   selector: 'app-user-profile-modal',
@@ -16,22 +16,16 @@ import { AuthService } from '../../../core/services/auth.service';
 export class UserProfileModalComponent {
   private readonly authService = inject(AuthService);
 
-  /** Signal que controla la visibilidad del modal */
+  // Estado del modal
   visible = signal(false);
-
-  /** Perfil del usuario autenticado */
   readonly userProfile = this.authService.userProfile;
 
-  /**
-   * Muestra el modal de perfil.
-   */
+  // Abre el modal
   show(): void {
     this.visible.set(true);
   }
 
-  /**
-   * Oculta el modal de perfil.
-   */
+  // Cierra el modal
   hide(): void {
     this.visible.set(false);
   }
