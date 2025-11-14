@@ -6,6 +6,7 @@ import { ProductResponse } from '../models/product-response';
 import { ProductRequest } from '../models/product-request';
 import { ProductUpdateRequest } from '../models/product-update-request';
 import { ApiResponse } from '../models/api-response.model';
+import { ApiEndpoints } from '../enums/api-endpoints.enum';
 import { StorageKeys } from '../enums/storage-keys.enum';
 import { environment } from '../../../environments/environment';
 
@@ -62,15 +63,20 @@ export class ProductService {
       name: response.name ?? '',
       description: response.description ?? '',
       categoryName: response.categoryName ?? '',
-      categoryDescription: response.categoryDescription ?? '',
+      categoryDescription: response.categoryDescription,
+      categoryId: response.categoryId,
       unitPrice: response.unitValue ?? 0,
+      unitValue: response.unitValue ?? 0,
       taxRate: response.iva ?? 0,
+      iva: response.iva ?? 0,
       taxAmount: response.ivaAmount ?? 0,
+      ivaAmount: response.ivaAmount ?? 0,
       totalPrice: response.totalPrice ?? 0,
       imageUrl: response.imageUrl,
       active: response.active ?? false,
-      estadoProductoId: response.estadoProductoId ?? 0,
-      stock: response.stock ?? 0,
+      estadoProductoId: response.estadoProductoId,
+      stock: response.stock,
+      createdAt: response.createdAt
     };
   }
 
@@ -96,16 +102,32 @@ export class ProductService {
   }
 
   /**
-   * Lista todos los productos activos del backend.
+   * Lista todos los productos activos del backend (para clientes en landing).
    * @returns Observable con la respuesta del backend
    */
   listAllProducts(): Observable<ApiResponse<ProductResponse[]>> {
     return this.http.get<ApiResponse<ProductResponse[]>>(
-      `${this.baseUrl}/list-active`,
+      `${environment.apiUrl}${ApiEndpoints.PRODUCTS_LIST_ACTIVE}`,
       { headers: this.getHeaders() }
     ).pipe(
       catchError(error => {
         console.error('Error en listAllProducts:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  /**
+   * Lista TODOS los productos del backend (activos e inactivos) para administración.
+   * @returns Observable con la respuesta del backend
+   */
+  listAll(): Observable<ApiResponse<ProductResponse[]>> {
+    return this.http.get<ApiResponse<ProductResponse[]>>(
+      `${environment.apiUrl}${ApiEndpoints.PRODUCTS_LIST_ALL}`,
+      { headers: this.getHeaders() }
+    ).pipe(
+      catchError(error => {
+        console.error('Error en listAll:', error);
         return throwError(() => error);
       })
     );
@@ -194,13 +216,41 @@ export class ProductService {
   }
 
   /**
+   * Carga TODOS los productos (activos e inactivos) para el panel de administración.
+   * Actualiza el estado del signal con todos los productos obtenidos.
+   */
+  loadAllProductsForAdmin(): void {
+    this.loadingState.set(true);
+    
+    this.listAll().subscribe({
+      next: (response) => {
+        const products = response.body.map(pr => this.mapProductResponseToProduct(pr));
+        this.productsState.set(products);
+        this.loadingState.set(false);
+      },
+      error: (error) => {
+        console.error('Error al cargar todos los productos:', error);
+        this.productsState.set([]);
+        this.loadingState.set(false);
+      }
+    });
+  }
+
+  /**
+   * Refresca todos los productos (para admin) forzando una nueva carga desde el backend.
+   */
+  refreshAllProducts(): void {
+    this.loadAllProductsForAdmin();
+  }
+
+  /**
    * Crea un nuevo producto en el sistema.
    * @param request - Datos del producto a crear
    * @returns Observable con la respuesta del backend
    */
   create(request: ProductRequest): Observable<ApiResponse<null>> {
     return this.http.post<ApiResponse<null>>(
-      `${this.baseUrl}/create`,
+      `${environment.apiUrl}${ApiEndpoints.PRODUCTS_CREATE}`,
       request,
       { headers: this.getHeaders() }
     ).pipe(

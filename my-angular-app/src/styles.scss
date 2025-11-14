@@ -121,3 +121,45 @@ html, body {
 .p-card .p-card-body {
   padding: 0;
 }
+
+/* Modal de Crear Producto - Estilos globales */
+.create-product-modal {
+  width: 90vw;
+  max-width: 600px;
+
+  .p-dialog-header {
+    background: linear-gradient(135deg, var(--red-main) 0%, var(--red-dark) 100%);
+    color: var(--white);
+    padding: 1.5rem;
+    border-radius: 16px 16px 0 0;
+
+    .p-dialog-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    .p-dialog-header-icon {
+      color: var(--white);
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+    }
+  }
+
+  .p-dialog-content {
+    padding: 2rem;
+    background: var(--gray-extralight);
+  }
+}
+
+/* Responsive para modal de producto */
+@media (max-width: 768px) {
+  .create-product-modal {
+    width: 95vw;
+
+    .p-dialog-content {
+      padding: 1.5rem;
+    }
+  }
+}

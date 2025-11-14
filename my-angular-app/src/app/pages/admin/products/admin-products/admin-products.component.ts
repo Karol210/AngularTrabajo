@@ -1,17 +1,18 @@
 import { Component, inject, signal, computed, type OnInit } from '@angular/core';
-import { NgClass } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ButtonModule } from 'primeng/button';
+import { DialogModule } from 'primeng/dialog';
+import { DropdownModule } from 'primeng/dropdown';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { InputTextModule } from 'primeng/inputtext';
+import { InputTextarea } from 'primeng/inputtextarea';
+import { TableModule } from 'primeng/table';
+import { TooltipModule } from 'primeng/tooltip';
+import { MessageService } from 'primeng/api';
 import { ProductService } from '../../../../core/services/product.service';
 import { CategoryService } from '../../../../core/services/category.service';
 import { Product } from '../../../../core/models/product.model';
 import { ProductRequest } from '../../../../core/models/product-request';
-import { DialogModule } from 'primeng/dialog';
-import { InputTextModule } from 'primeng/inputtext';
-import { InputNumberModule } from 'primeng/inputnumber';
-import { InputTextarea } from 'primeng/inputtextarea';
-import { DropdownModule } from 'primeng/dropdown';
-import { ButtonModule } from 'primeng/button';
-import { MessageService } from 'primeng/api';
 
 type TabType = 'problems' | 'available';
 
@@ -31,14 +32,15 @@ type TabType = 'problems' | 'available';
   selector: 'app-admin-products',
   standalone: true,
   imports: [
-    NgClass, 
     ReactiveFormsModule,
+    ButtonModule,
     DialogModule,
-    InputTextModule,
-    InputNumberModule,
-    InputTextarea,
     DropdownModule,
-    ButtonModule
+    InputNumberModule,
+    InputTextModule,
+    InputTextarea,
+    TableModule,
+    TooltipModule
   ],
   templateUrl: './admin-products.component.html',
   styleUrl: './admin-products.component.scss'
@@ -96,7 +98,8 @@ export class AdminProductsComponent implements OnInit {
   readonly loading = computed(() => this.productService.loading());
 
   ngOnInit(): void {
-    this.productService.refreshProducts();
+    // Cargar TODOS los productos (activos e inactivos) para administración
+    this.productService.loadAllProductsForAdmin();
   }
 
   /**
@@ -110,9 +113,10 @@ export class AdminProductsComponent implements OnInit {
 
   /**
    * Refresca la lista de productos forzando una nueva carga desde el backend.
+   * Usa refreshAllProducts para cargar todos los productos (activos e inactivos).
    */
   refreshProducts(): void {
-    this.productService.refreshProducts();
+    this.productService.refreshAllProducts();
   }
 
   /**

@@ -15,7 +15,7 @@
   padding: 2rem; // Cuadrado padre - único elemento con padding lateral
   max-width: 100%;
   margin: 0 auto;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: var(--background-body);
   min-height: 100vh;
 }
 
@@ -27,7 +27,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: white;
+    background: var(--white);
     padding: 1.5rem 2rem;
     border-radius: 16px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
@@ -37,7 +37,7 @@
         margin: 0 0 0.25rem 0;
         font-size: 2rem;
         font-weight: 700;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, var(--red-main) 0%, var(--red-dark) 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
@@ -45,7 +45,7 @@
       
       .subtitle {
         margin: 0;
-        color: #64748b;
+        color: var(--black-light);
         font-size: 0.875rem;
       }
     }
@@ -57,142 +57,58 @@
   }
 }
 
-// Buttons - Estilos base para botones de acción
-.btn-refresh,
-.btn-create {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  
-  svg {
-    transition: transform 0.3s ease;
-  }
-  
-  &:hover:not(:disabled) {
-    transform: translateY(-2px);
-    
-    svg {
-      transform: scale(1.1);
+// Buttons - Estilos para botones PrimeNG
+.header-actions {
+  ::ng-deep {
+    .p-button {
+      font-weight: 600;
+      transition: all 0.3s ease;
+      
+      &:hover:not(:disabled) {
+        transform: translateY(-2px);
+      }
+      
+      &:active {
+        transform: translateY(0);
+      }
     }
-  }
-  
-  &:active {
-    transform: translateY(0);
-  }
-  
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-}
-
-.btn-refresh {
-  background: white;
-  color: #667eea;
-  border: 2px solid #667eea;
-  
-  &:hover:not(:disabled) {
-    background: #667eea;
-    color: white;
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
     
-    svg {
-      transform: rotate(180deg);
+    .btn-refresh {
+      &:hover:not(:disabled) {
+        box-shadow: 0 4px 15px rgba(225, 17, 28, 0.3);
+      }
+    }
+    
+    .btn-create {
+      &:hover:not(:disabled) {
+        box-shadow: 0 6px 20px rgba(225, 17, 28, 0.4);
+      }
     }
   }
 }
 
-.btn-create {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  
-  &:hover:not(:disabled) {
-    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
-  }
-}
-
-// Tabs - Navegación entre categorías de productos
+// Tabs - Navegación entre categorías de productos con PrimeNG buttons
 .tabs {
   display: flex;
   gap: 1rem;
   margin-bottom: 2rem;
   
-  .tab-button {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.75rem;
-    padding: 1rem 1.5rem;
-    background: white;
-    border: 2px solid #e2e8f0;
-    border-radius: 12px;
-    font-size: 1rem;
-    font-weight: 600;
-    color: #64748b;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    
-    svg {
-      stroke: #64748b;
-      transition: stroke 0.3s ease;
-    }
-    
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 2rem;
-      height: 2rem;
-      padding: 0 0.5rem;
-      background: #e2e8f0;
-      color: #64748b;
-      border-radius: 10px;
-      font-size: 0.875rem;
-      font-weight: 700;
+  ::ng-deep {
+    .p-button {
+      flex: 1;
+      font-size: 1rem;
+      font-weight: 600;
+      padding: 1rem 1.5rem;
+      border-radius: 12px;
       transition: all 0.3s ease;
       
-      &.warning {
-        background: #fef3c7;
-        color: #d97706;
-      }
-    }
-    
-    &.active {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      border-color: transparent;
-      color: white;
-      box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
-      
-      svg {
-        stroke: white;
+      &:hover {
+        transform: translateY(-2px);
       }
       
-      .badge {
-        background: rgba(255, 255, 255, 0.2);
-        color: white;
-        
-        &.warning {
-          background: rgba(255, 255, 255, 0.2);
-          color: white;
-        }
-      }
-    }
-    
-    &:hover:not(.active) {
-      border-color: #667eea;
-      color: #667eea;
-      transform: translateY(-2px);
-      
-      svg {
-        stroke: #667eea;
+      .p-badge {
+        font-size: 0.875rem;
+        font-weight: 700;
       }
     }
   }
@@ -205,22 +121,22 @@
   align-items: center;
   justify-content: center;
   padding: 4rem;
-  background: white;
+  background: var(--white);
   border-radius: 16px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   
   .spinner {
     width: 50px;
     height: 50px;
-    border: 4px solid #f3f4f6;
-    border-top-color: #667eea;
+    border: 4px solid var(--gray-light);
+    border-top-color: var(--red-main);
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
   
   p {
     margin-top: 1rem;
-    color: #64748b;
+    color: var(--black-light);
     font-size: 1rem;
   }
 }
@@ -236,61 +152,61 @@
   align-items: center;
   justify-content: center;
   padding: 4rem;
-  background: white;
+  background: var(--white);
   border-radius: 16px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   text-align: center;
   
   svg {
-    stroke: #cbd5e1;
+    stroke: var(--gray-dark-1);
     margin-bottom: 1.5rem;
   }
   
   h3 {
     margin: 0 0 0.5rem 0;
-    color: #1e293b;
+    color: var(--black-dark);
     font-size: 1.5rem;
     font-weight: 700;
   }
   
   p {
     margin: 0 0 1.5rem 0;
-    color: #64748b;
+    color: var(--black-light);
     font-size: 1rem;
+  }
+  
+  ::ng-deep {
+    .btn-create {
+      &:hover {
+        box-shadow: 0 6px 20px rgba(225, 17, 28, 0.4);
+      }
+    }
   }
 }
 
-// Table Container - Contenedor principal de la tabla
+// Table Container - Contenedor principal de la tabla con PrimeNG
 .table-container {
-  background: white;
+  background: var(--white);
   border-radius: 16px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   overflow: hidden;
-}
-
-.table-wrapper {
-  overflow-x: auto;
-}
-
-// Products Table - Tabla de productos con todas las columnas
-.products-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.875rem;
   
-  thead {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    
-    tr {
-      th {
+  ::ng-deep {
+    .p-datatable {
+      font-size: 0.875rem;
+      
+      .p-datatable-thead > tr > th {
+        background: linear-gradient(135deg, var(--red-main) 0%, var(--red-dark) 100%);
         padding: 1rem;
         text-align: left;
         font-weight: 600;
-        color: white;
+        color: var(--white);
         text-transform: uppercase;
         font-size: 0.75rem;
         letter-spacing: 0.5px;
         white-space: nowrap;
+        border: none;
+        
         
         &.th-image {
           width: 80px;
@@ -333,25 +249,29 @@
           text-align: center;
         }
       }
-    }
-  }
-  
-  tbody {
-    tr {
-      border-bottom: 1px solid #e2e8f0;
-      transition: all 0.2s ease;
       
-      &:hover {
-        background: #f8fafc;
+      .p-datatable-tbody > tr {
+        border-bottom: 1px solid var(--gray-dark-1);
+        transition: all 0.2s ease;
+        
+        &:hover {
+          background: var(--gray-light);
+        }
+        
+        &:last-child {
+          border-bottom: none;
+        }
+        
+        > td {
+          padding: 1rem;
+          vertical-align: middle;
+          border: none;
+        }
       }
       
-      &:last-child {
-        border-bottom: none;
-      }
-      
-      td {
-        padding: 1rem;
-        vertical-align: middle;
+      .p-datatable-tfoot > tr > td {
+        padding: 0;
+        border: none;
       }
     }
   }
@@ -367,7 +287,7 @@
     margin: 0 auto;
     border-radius: 8px;
     overflow: hidden;
-    background: #f8fafc;
+    background: var(--gray-light);
     
     img {
       width: 100%;
@@ -380,8 +300,8 @@
 .td-id {
   .product-id {
     padding: 0.25rem 0.75rem;
-    background: #f1f5f9;
-    color: #64748b;
+    background: var(--gray-light);
+    color: var(--black-light);
     border-radius: 6px;
     font-size: 0.75rem;
     font-weight: 600;
@@ -396,12 +316,12 @@
     
     .product-name {
       font-weight: 600;
-      color: #1e293b;
+      color: var(--black-dark);
       line-height: 1.4;
     }
     
     .product-description {
-      color: #64748b;
+      color: var(--black-light);
       font-size: 0.75rem;
       line-height: 1.4;
       display: -webkit-box;
@@ -416,8 +336,8 @@
   .category-badge {
     display: inline-block;
     padding: 0.375rem 0.75rem;
-    background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
-    color: #667eea;
+    background: var(--blue-extralight);
+    color: var(--blue-dark);
     border-radius: 6px;
     font-weight: 600;
     font-size: 0.75rem;
@@ -434,13 +354,13 @@
     font-weight: 600;
     
     &.stock-ok {
-      background: #dcfce7;
-      color: #16a34a;
+      background: var(--green-extralight);
+      color: var(--green-dark);
     }
     
     &.stock-low {
-      background: #fef3c7;
-      color: #d97706;
+      background: var(--yellow-extralight);
+      color: var(--yellow-dark);
       animation: pulse-warning 2s ease-in-out infinite;
     }
   }
@@ -461,10 +381,10 @@
   
   .price-value {
     font-weight: 600;
-    color: #1e293b;
+    color: var(--black-dark);
     
     &.iva {
-      color: #64748b;
+      color: var(--black-light);
       
       small {
         display: block;
@@ -475,7 +395,7 @@
     }
     
     &.total {
-      color: #667eea;
+      color: var(--red-main);
       font-size: 1rem;
       font-weight: 700;
     }
@@ -495,35 +415,35 @@
     letter-spacing: 0.3px;
     
     &.status-available {
-      background: #dcfce7;
-      color: #16a34a;
+      background: var(--green-extralight);
+      color: var(--green-dark);
     }
     
     &.status-low-stock {
-      background: #fef3c7;
-      color: #d97706;
+      background: var(--yellow-extralight);
+      color: var(--yellow-dark);
     }
     
     &.status-no-stock {
-      background: #fee2e2;
-      color: #dc2626;
+      background: var(--red-extralight);
+      color: var(--red-dark);
     }
     
     &.status-inactive {
-      background: #f1f5f9;
-      color: #64748b;
+      background: var(--gray-light);
+      color: var(--black-light);
     }
   }
 }
 
 .td-date {
   .date-value {
-    color: #64748b;
+    color: var(--black-light);
     font-size: 0.8125rem;
   }
 }
 
-// Action Buttons - Botones CRUD de cada fila
+// Action Buttons - Botones CRUD de cada fila con PrimeNG
 .td-actions {
   .action-buttons {
     display: flex;
@@ -531,85 +451,38 @@
     justify-content: center;
     align-items: center;
     
-    .btn-action {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 36px;
-      height: 36px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      
-      svg {
-        transition: transform 0.2s ease;
-      }
-      
-      &:hover {
-        transform: translateY(-2px);
+    ::ng-deep {
+      .p-button {
+        width: 36px;
+        height: 36px;
         
-        svg {
-          transform: scale(1.1);
+        &.btn-action {
+          transition: all 0.2s ease;
+          
+          &:hover {
+            transform: translateY(-2px);
+          }
+          
+          &:active {
+            transform: translateY(0);
+          }
         }
-      }
-      
-      &:active {
-        transform: translateY(0);
-      }
-    }
-    
-    .btn-view {
-      background: #eff6ff;
-      color: #2563eb;
-      
-      &:hover {
-        background: #2563eb;
-        color: white;
-        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
-      }
-    }
-    
-    .btn-edit {
-      background: #f0fdf4;
-      color: #16a34a;
-      
-      &:hover {
-        background: #16a34a;
-        color: white;
-        box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
-      }
-    }
-    
-    .btn-toggle {
-      background: #fef3c7;
-      color: #d97706;
-      
-      &:hover {
-        background: #d97706;
-        color: white;
-        box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3);
-      }
-      
-      &.btn-activate {
-        background: #dbeafe;
-        color: #2563eb;
         
-        &:hover {
-          background: #2563eb;
-          color: white;
+        &.btn-view:hover {
+          box-shadow: 0 4px 12px rgba(0, 94, 220, 0.3);
         }
-      }
-    }
-    
-    .btn-delete {
-      background: #fee2e2;
-      color: #dc2626;
-      
-      &:hover {
-        background: #dc2626;
-        color: white;
-        box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+        
+        &.btn-edit:hover {
+          box-shadow: 0 4px 12px rgba(126, 33, 255, 0.3);
+        }
+        
+        &.btn-toggle:hover {
+          box-shadow: 0 4px 12px rgba(255, 175, 5, 0.3);
+        }
+        
+        &.btn-delete:hover {
+          box-shadow: 0 4px 12px rgba(225, 17, 28, 0.3);
+        }
       }
     }
   }
@@ -618,17 +491,17 @@
 // Table Footer - Información de totales
 .table-footer {
   padding: 1rem 1.5rem;
-  border-top: 1px solid #e2e8f0;
-  background: #f8fafc;
+  border-top: 1px solid var(--gray-dark-1);
+  background: var(--gray-light);
   
   .footer-info {
     p {
       margin: 0;
-      color: #64748b;
+      color: var(--black-light);
       font-size: 0.875rem;
       
       strong {
-        color: #1e293b;
+        color: var(--black-dark);
         font-weight: 700;
       }
     }
@@ -696,37 +569,8 @@
 }
 
 // Modal de Crear Producto
-::ng-deep .create-product-modal {
-  width: 90vw;
-  max-width: 600px;
+// Estilos aplicados directamente sin ::ng-deep
 
-  .p-dialog-header {
-    background: linear-gradient(135deg, var(--blue-main) 0%, var(--blue-dark) 100%);
-    color: var(--white);
-    padding: 1.5rem;
-    border-radius: 16px 16px 0 0;
-
-    .p-dialog-title {
-      font-size: 1.25rem;
-      font-weight: 600;
-    }
-
-    .p-dialog-header-icon {
-      color: var(--white);
-
-      &:hover {
-        background: rgba(255, 255, 255, 0.1);
-      }
-    }
-  }
-
-  .p-dialog-content {
-    padding: 2rem;
-    background: var(--gray-extralight);
-  }
-}
-
-// Formulario de Producto
 .product-form {
   display: flex;
   flex-direction: column;
@@ -746,43 +590,6 @@
         color: var(--red-main);
         margin-left: 0.25rem;
       }
-    }
-
-    input[type="text"],
-    textarea,
-    ::ng-deep .p-dropdown {
-      border: 2px solid var(--gray-dark-1);
-      border-radius: 8px;
-      padding: 0.75rem;
-      font-size: 0.875rem;
-      transition: all 0.2s ease;
-
-      &:focus,
-      &.p-focus {
-        outline: none;
-        border-color: var(--blue-main);
-        box-shadow: 0 0 0 3px rgba(0, 94, 220, 0.1);
-      }
-
-      &.invalid,
-      &.ng-invalid.ng-touched {
-        border-color: var(--red-main);
-
-        &:focus,
-        &.p-focus {
-          box-shadow: 0 0 0 3px rgba(225, 17, 28, 0.1);
-        }
-      }
-
-      &::placeholder {
-        color: var(--black-extralight);
-      }
-    }
-
-    textarea {
-      resize: vertical;
-      min-height: 100px;
-      font-family: inherit;
     }
 
     .error-message {
@@ -816,16 +623,8 @@
   }
 }
 
-// Responsive para modal
+// Responsive para formulario
 @media (max-width: 768px) {
-  ::ng-deep .create-product-modal {
-    width: 95vw;
-
-    .p-dialog-content {
-      padding: 1.5rem;
-    }
-  }
-
   .product-form {
     .form-row {
       grid-template-columns: 1fr;

@@ -8,6 +8,7 @@ export enum ApiEndpoints {
   
   // Products endpoints
   PRODUCTS_LIST_ACTIVE = '/api/v1/products/list-active',
+  PRODUCTS_LIST_ALL = '/api/v1/products/list-all',
   PRODUCTS_CREATE = '/api/v1/products/create',
   
   // Categories endpoints

@@ -7,47 +7,45 @@
         <p class="subtitle">Administra tu inventario de productos</p>
       </div>
       <div class="header-actions">
-        <button class="btn-refresh" (click)="refreshProducts()" [disabled]="loading()">
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M17.5 10C17.5 14.1421 14.1421 17.5 10 17.5C5.85786 17.5 2.5 14.1421 2.5 10C2.5 5.85786 5.85786 2.5 10 2.5C12.0711 2.5 13.9461 3.35714 15.3033 4.75" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            <path d="M17.5 2.5V7.5H12.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          Actualizar
-        </button>
-        <button class="btn-create" (click)="createProduct()">
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M10 4.16667V15.8333M4.16667 10H15.8333" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          Nuevo Producto
-        </button>
+        <p-button 
+          label="Actualizar"
+          icon="pi pi-refresh"
+          [outlined]="true"
+          severity="secondary"
+          (onClick)="refreshProducts()"
+          [disabled]="loading()"
+          styleClass="btn-refresh" />
+        
+        <p-button 
+          label="Nuevo Producto"
+          icon="pi pi-plus"
+          severity="danger"
+          (onClick)="createProduct()"
+          styleClass="btn-create" />
       </div>
     </div>
   </div>
 
   <!-- Tabs -->
   <div class="tabs">
-    <button 
-      class="tab-button" 
-      [class.active]="activeTab() === 'available'"
-      (click)="setActiveTab('available')">
-      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M10 17.5C14.1421 17.5 17.5 14.1421 17.5 10C17.5 5.85786 14.1421 2.5 10 2.5C5.85786 2.5 2.5 5.85786 2.5 10C2.5 14.1421 5.85786 17.5 10 17.5Z" stroke="currentColor" stroke-width="2"/>
-        <path d="M7.5 10L9.16667 11.6667L12.5 8.33333" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-      Productos Disponibles
-      <span class="badge">{{ availableProducts().length }}</span>
-    </button>
+    <p-button 
+      [label]="'Productos Disponibles'"
+      icon="pi pi-check-circle"
+      [badge]="availableProducts().length.toString()"
+      [outlined]="activeTab() !== 'available'"
+      [severity]="activeTab() === 'available' ? 'danger' : 'secondary'"
+      (onClick)="setActiveTab('available')"
+      styleClass="tab-button" />
     
-    <button 
-      class="tab-button" 
-      [class.active]="activeTab() === 'problems'"
-      (click)="setActiveTab('problems')">
-      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M10 6.66667V10M10 13.3333H10.0083M17.5 10C17.5 14.1421 14.1421 17.5 10 17.5C5.85786 17.5 2.5 14.1421 2.5 10C2.5 5.85786 5.85786 2.5 10 2.5C14.1421 2.5 17.5 5.85786 17.5 10Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-      Sin Stock / Inactivos
-      <span class="badge warning">{{ problemProducts().length }}</span>
-    </button>
+    <p-button 
+      [label]="'Sin Stock / Inactivos'"
+      icon="pi pi-exclamation-triangle"
+      [badge]="problemProducts().length.toString()"
+      badgeSeverity="warn"
+      [outlined]="activeTab() !== 'problems'"
+      [severity]="activeTab() === 'problems' ? 'warn' : 'secondary'"
+      (onClick)="setActiveTab('problems')"
+      styleClass="tab-button" />
   </div>
 
   <!-- Loading State -->
@@ -71,169 +69,168 @@
       } @else {
         <p>¡Excelente! Todos los productos están disponibles</p>
       }
-      <button class="btn-create" (click)="createProduct()">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M10 4.16667V15.8333M4.16667 10H15.8333" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        Crear Primer Producto
-      </button>
+      <p-button 
+        label="Crear Primer Producto"
+        icon="pi pi-plus"
+        severity="danger"
+        (onClick)="createProduct()"
+        styleClass="btn-create" />
     </div>
   }
 
   <!-- Products Table -->
   @if (!loading() && displayedProducts().length > 0) {
     <div class="table-container">
-      <div class="table-wrapper">
-        <table class="products-table">
-          <thead>
-            <tr>
-              <th class="th-image">Imagen</th>
-              <th class="th-id">ID</th>
-              <th class="th-name">Nombre</th>
-              <th class="th-category">Categoría</th>
-              <th class="th-stock">Stock</th>
-              <th class="th-price">Precio Base</th>
-              <th class="th-price">IVA</th>
-              <th class="th-price">Precio Total</th>
-              <th class="th-status">Estado</th>
-              <th class="th-date">Creado</th>
-              <th class="th-actions">Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (product of displayedProducts(); track product.id) {
-              <tr class="table-row">
-                <!-- Imagen -->
-                <td class="td-image">
-                  <div class="product-image-wrapper">
-                    <img 
-                      [src]="product.imageUrl || 'https://via.placeholder.com/80x80?text=Sin+Imagen'" 
-                      [alt]="product.name"
-                      (error)="$any($event.target).src='https://via.placeholder.com/80x80?text=Sin+Imagen'">
-                  </div>
-                </td>
+      <p-table 
+        [value]="displayedProducts()" 
+        [tableStyle]="{ 'min-width': '50rem' }"
+        styleClass="products-table"
+        [scrollable]="true"
+        scrollHeight="flex">
+        
+        <ng-template pTemplate="header">
+          <tr>
+            <th class="th-image">Imagen</th>
+            <th class="th-id">ID</th>
+            <th class="th-name">Nombre</th>
+            <th class="th-category">Categoría</th>
+            <th class="th-stock">Stock</th>
+            <th class="th-price">Precio Base</th>
+            <th class="th-price">IVA</th>
+            <th class="th-price">Precio Total</th>
+            <th class="th-status">Estado</th>
+            <th class="th-date">Creado</th>
+            <th class="th-actions">Acciones</th>
+          </tr>
+        </ng-template>
+        
+        <ng-template pTemplate="body" let-product>
+          <tr>
+            <!-- Imagen -->
+            <td class="td-image">
+              <div class="product-image-wrapper">
+                <img 
+                  [src]="product.imageUrl || 'https://via.placeholder.com/80x80?text=Sin+Imagen'" 
+                  [alt]="product.name"
+                  (error)="$any($event.target).src='https://via.placeholder.com/80x80?text=Sin+Imagen'">
+              </div>
+            </td>
 
-                <!-- ID -->
-                <td class="td-id">
-                  <span class="product-id">#{{ product.id }}</span>
-                </td>
+            <!-- ID -->
+            <td class="td-id">
+              <span class="product-id">#{{ product.id }}</span>
+            </td>
 
-                <!-- Nombre -->
-                <td class="td-name">
-                  <div class="product-name-cell">
-                    <span class="product-name">{{ product.name }}</span>
-                    <span class="product-description">{{ product.description }}</span>
-                  </div>
-                </td>
+            <!-- Nombre -->
+            <td class="td-name">
+              <div class="product-name-cell">
+                <span class="product-name">{{ product.name }}</span>
+                <span class="product-description">{{ product.description }}</span>
+              </div>
+            </td>
 
-                <!-- Categoría -->
-                <td class="td-category">
-                  <span class="category-badge">{{ product.categoryName }}</span>
-                </td>
+            <!-- Categoría -->
+            <td class="td-category">
+              <span class="category-badge">{{ product.categoryName }}</span>
+            </td>
 
-                <!-- Stock -->
-                <td class="td-stock">
-                  <span 
-                    class="stock-value" 
-                    [class.stock-low]="product.stock !== undefined && product.stock < 10"
-                    [class.stock-ok]="product.stock === undefined || product.stock >= 10">
-                    {{ product.stock !== undefined ? product.stock + ' unidades' : 'N/A' }}
-                  </span>
-                </td>
+            <!-- Stock -->
+            <td class="td-stock">
+              <span 
+                class="stock-value" 
+                [class.stock-low]="product.stock !== undefined && product.stock < 10"
+                [class.stock-ok]="product.stock === undefined || product.stock >= 10">
+                {{ product.stock !== undefined ? product.stock + ' unidades' : 'N/A' }}
+              </span>
+            </td>
 
-                <!-- Precio Base -->
-                <td class="td-price">
-                  <span class="price-value">{{ formatPrice(product.unitValue || product.unitPrice || 0) }}</span>
-                </td>
+            <!-- Precio Base -->
+            <td class="td-price">
+              <span class="price-value">{{ formatPrice(product.unitValue || product.unitPrice || 0) }}</span>
+            </td>
 
-                <!-- IVA -->
-                <td class="td-price">
-                  <span class="price-value iva">
-                    {{ formatPrice(product.ivaAmount || product.taxAmount || 0) }}
-                    <small>({{ product.iva || product.taxRate }}%)</small>
-                  </span>
-                </td>
+            <!-- IVA -->
+            <td class="td-price">
+              <span class="price-value iva">
+                {{ formatPrice(product.ivaAmount || product.taxAmount || 0) }}
+                <small>({{ product.iva || product.taxRate }}%)</small>
+              </span>
+            </td>
 
-                <!-- Precio Total -->
-                <td class="td-price">
-                  <span class="price-value total">{{ formatPrice(product.totalPrice) }}</span>
-                </td>
+            <!-- Precio Total -->
+            <td class="td-price">
+              <span class="price-value total">{{ formatPrice(product.totalPrice) }}</span>
+            </td>
 
-                <!-- Estado -->
-                <td class="td-status">
-                  <span class="status-badge" [ngClass]="getStatusClass(product)">
-                    {{ getProductStatus(product) }}
-                  </span>
-                </td>
+            <!-- Estado -->
+            <td class="td-status">
+              <span class="status-badge" [class]="getStatusClass(product)">
+                {{ getProductStatus(product) }}
+              </span>
+            </td>
 
-                <!-- Fecha -->
-                <td class="td-date">
-                  <span class="date-value">{{ formatDate(product.createdAt) }}</span>
-                </td>
+            <!-- Fecha -->
+            <td class="td-date">
+              <span class="date-value">{{ formatDate(product.createdAt) }}</span>
+            </td>
 
-                <!-- Acciones -->
-                <td class="td-actions">
-                  <div class="action-buttons">
-                    <button 
-                      class="btn-action btn-view" 
-                      (click)="viewProduct(product)"
-                      title="Ver detalles">
-                      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M1.5 9C1.5 9 4.5 3 9 3C13.5 3 16.5 9 16.5 9C16.5 9 13.5 15 9 15C4.5 15 1.5 9 1.5 9Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M9 11.25C10.2426 11.25 11.25 10.2426 11.25 9C11.25 7.75736 10.2426 6.75 9 6.75C7.75736 6.75 6.75 7.75736 6.75 9C6.75 10.2426 7.75736 11.25 9 11.25Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                      </svg>
-                    </button>
+            <!-- Acciones -->
+            <td class="td-actions">
+              <div class="action-buttons">
+                <p-button 
+                  icon="pi pi-eye"
+                  [rounded]="true"
+                  severity="info"
+                  [text]="true"
+                  (onClick)="viewProduct(product)"
+                  pTooltip="Ver detalles"
+                  tooltipPosition="top"
+                  styleClass="btn-action btn-view" />
 
-                    <button 
-                      class="btn-action btn-edit" 
-                      (click)="editProduct(product)"
-                      title="Editar producto">
-                      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M13.5 2.25L15.75 4.5M2.25 15.75H4.5L14.625 5.625L12.375 3.375L2.25 13.5V15.75Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                      </svg>
-                    </button>
+                <p-button 
+                  icon="pi pi-pencil"
+                  [rounded]="true"
+                  severity="help"
+                  [text]="true"
+                  (onClick)="editProduct(product)"
+                  pTooltip="Editar producto"
+                  tooltipPosition="top"
+                  styleClass="btn-action btn-edit" />
 
-                    <button 
-                      class="btn-action btn-toggle"
-                      [class.btn-activate]="!product.active"
-                      (click)="toggleProductStatus(product)"
-                      [title]="product.active ? 'Desactivar producto' : 'Activar producto'">
-                      @if (product.active) {
-                        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M15 7.5V12C15 13.6569 13.6569 15 12 15H6C4.34315 15 3 13.6569 3 12V6C3 4.34315 4.34315 3 6 3H10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                          <path d="M10.5 7.5L15 3M15 3H11.25M15 3V6.75" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                      } @else {
-                        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M6 9L7.5 10.5L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                          <path d="M15.75 9C15.75 12.7279 12.7279 15.75 9 15.75C5.27208 15.75 2.25 12.7279 2.25 9C2.25 5.27208 5.27208 2.25 9 2.25C12.7279 2.25 15.75 5.27208 15.75 9Z" stroke="currentColor" stroke-width="1.5"/>
-                        </svg>
-                      }
-                    </button>
+                <p-button 
+                  [icon]="product.active ? 'pi pi-power-off' : 'pi pi-check'"
+                  [rounded]="true"
+                  [severity]="product.active ? 'warn' : 'info'"
+                  [text]="true"
+                  (onClick)="toggleProductStatus(product)"
+                  [pTooltip]="product.active ? 'Desactivar producto' : 'Activar producto'"
+                  tooltipPosition="top"
+                  styleClass="btn-action btn-toggle" />
 
-                    <button 
-                      class="btn-action btn-delete" 
-                      (click)="deleteProduct(product)"
-                      title="Eliminar producto">
-                      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M3 4.5H15M6.75 4.5V3C6.75 2.58579 7.08579 2.25 7.5 2.25H10.5C10.9142 2.25 11.25 2.58579 11.25 3V4.5M13.5 4.5V14.25C13.5 14.6642 13.1642 15 12.75 15H5.25C4.83579 15 4.5 14.6642 4.5 14.25V4.5H13.5Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M7.5 8.25V11.25M10.5 8.25V11.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                      </svg>
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            }
-          </tbody>
-        </table>
-      </div>
-
-      <!-- Table Footer -->
-      <div class="table-footer">
-        <div class="footer-info">
-          <p>Mostrando <strong>{{ displayedProducts().length }}</strong> productos</p>
-        </div>
-      </div>
+                <p-button 
+                  icon="pi pi-trash"
+                  [rounded]="true"
+                  severity="danger"
+                  [text]="true"
+                  (onClick)="deleteProduct(product)"
+                  pTooltip="Eliminar producto"
+                  tooltipPosition="top"
+                  styleClass="btn-action btn-delete" />
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+        
+        <ng-template pTemplate="footer">
+          <tr>
+            <td colspan="11" class="table-footer">
+              <div class="footer-info">
+                <p>Mostrando <strong>{{ displayedProducts().length }}</strong> productos</p>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
     </div>
   }
 </div>
@@ -408,13 +405,13 @@
         (onClick)="closeCreateModal()"
         [disabled]="submitting()">
       </p-button>
-      <p-button 
-        type="submit"
-        label="Crear Producto" 
-        severity="success"
-        [loading]="submitting()"
-        [disabled]="productForm.invalid">
-      </p-button>
+        <p-button 
+          type="submit"
+          label="Crear Producto" 
+          severity="danger"
+          [loading]="submitting()"
+          [disabled]="productForm.invalid">
+        </p-button>
     </div>
   </form>
 </p-dialog>
