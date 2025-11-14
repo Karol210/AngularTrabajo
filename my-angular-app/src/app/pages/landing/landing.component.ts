@@ -10,6 +10,7 @@ import { ProductService } from '../../core/services/product.service';
 import { CartService } from '../../core/services/cart.service';
 import { AuthService } from '../../core/services/auth.service';
 import { Product } from '../../core/models/product.model';
+import { Messages, MessageTitles } from '../../shared/constants/messages.constants';
 
 /**
  * Componente principal del landing page.
@@ -68,16 +69,16 @@ export class LandingComponent {
         // Muestra notificación de éxito
         this.messageService.add({
           severity: 'success',
-          summary: 'Producto agregado',
-          detail: `${product.name} agregado al carrito`,
+          summary: MessageTitles.SUCCESS,
+          detail: `${product.name} ${Messages.SUCCESS.PRODUCT_ADDED}`,
           life: 3000
         });
       },
       error: (error) => {
         this.messageService.add({
           severity: 'error',
-          summary: 'Error',
-          detail: 'No se pudo agregar el producto al carrito',
+          summary: MessageTitles.ERROR,
+          detail: Messages.ERROR.ADD_TO_CART_FAILED,
           life: 3000
         });
       }

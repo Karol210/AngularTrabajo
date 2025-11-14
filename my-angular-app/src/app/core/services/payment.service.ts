@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, catchError, throwError } from 'rxjs';
 import { CardData, ProcessPaymentRequest, ProcessPaymentResponse } from '../models/payment.model';
+import { ApiEndpoints } from '../enums/api-endpoints.enum';
 import { AuthService } from './auth.service';
 import { environment } from '../../../environments/environment';
 
@@ -14,7 +15,6 @@ import { environment } from '../../../environments/environment';
 export class PaymentService {
   private readonly http = inject(HttpClient);
   private readonly authService = inject(AuthService);
-  private readonly baseUrl = `${environment.apiUrl}/api/v1/payments`;
 
   /**
    * Genera los headers necesarios para las peticiones HTTP.
@@ -54,7 +54,7 @@ export class PaymentService {
     };
 
     return this.http.post<ProcessPaymentResponse>(
-      `${this.baseUrl}/process`,
+      `${environment.apiUrl}${ApiEndpoints.PAYMENTS_PROCESS}`,
       request,
       { headers: this.getHeaders() }
     ).pipe(

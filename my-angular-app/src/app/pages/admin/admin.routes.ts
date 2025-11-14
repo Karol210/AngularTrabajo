@@ -22,7 +22,7 @@ export const ADMIN_ROUTES: Routes = [
       },
       {
         path: 'products',
-        loadComponent: () => import('./dashboard/admin-dashboard.component').then(m => m.AdminDashboardComponent)
+        loadComponent: () => import('./products/admin-products/admin-products.component').then(m => m.AdminProductsComponent)
       },
       {
         path: 'orders',

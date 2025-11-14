@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
 import { StorageKeys } from '../enums/storage-keys.enum';
 import { AppRoutes } from '../enums/app-routes.enum';
+import { ApiEndpoints } from '../enums/api-endpoints.enum';
 import { User, LoginCredentials, AuthResponse, UserLoginCredentials, UserLoginResponse } from '../models/user.model';
 import { environment } from '../../../environments/environment';
 import { StorageService } from './storage.service';
@@ -16,33 +17,33 @@ import { StorageService } from './storage.service';
   providedIn: 'root'
 })
 export class AuthService {
-  private router = inject(Router);
-  private http = inject(HttpClient);
-  private storage = inject(StorageService);
-  private adminUserState = signal<User | null>(null);
-  private userState = signal<string | null>(null);
+  private readonly router = inject(Router);
+  private readonly http = inject(HttpClient);
+  private readonly storage = inject(StorageService);
+  private readonly adminUserState = signal<User | null>(null);
+  private readonly userState = signal<string | null>(null);
   
   /**
    * Signal reactivo con el usuario administrador actual.
    * Null si no hay sesión activa.
    */
-  adminUser = this.adminUserState.asReadonly();
+  readonly adminUser = this.adminUserState.asReadonly();
   
   /**
    * Signal reactivo con el nombre del usuario regular autenticado.
    * Null si no hay sesión activa.
    */
-  currentUser = this.userState.asReadonly();
+  readonly currentUser = this.userState.asReadonly();
   
   /**
    * Signal reactivo que indica si hay un administrador autenticado.
    */
-  isAdminAuthenticated = computed(() => this.adminUserState() !== null);
+  readonly isAdminAuthenticated = computed(() => this.adminUserState() !== null);
   
   /**
    * Signal reactivo que indica si hay un usuario regular autenticado.
    */
-  isUserAuthenticated = computed(() => this.userState() !== null);
+  readonly isUserAuthenticated = computed(() => this.userState() !== null);
 
   constructor() {
     this.loadAdminFromStorage();
@@ -71,35 +72,22 @@ export class AuthService {
    * Inicia sesión de administrador y persiste la sesión en sessionStorage.
    * 
    * @param credentials - Usuario y contraseña del administrador
-   * @returns Promise que resuelve true si login exitoso, false si credenciales inválidas
-   * 
-   * @todo Reemplazar con llamada HTTP real al backend
+   * @returns Observable con la respuesta del login
    */
-  adminLogin(credentials: LoginCredentials): Promise<boolean> {
-    // Simulación de login - reemplazar con llamada HTTP real
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        if (credentials.username === 'admin' && credentials.password === 'admin123') {
-          const mockResponse: AuthResponse = {
-            token: 'mock-admin-token-' + Date.now(),
-            user: {
-              id: '1',
-              username: credentials.username,
-              email: 'admin@davivienda.com',
-              role: 'admin' as any
-            }
-          };
-
-          this.storage.setItem(StorageKeys.ADMIN_TOKEN, mockResponse.token);
-          this.storage.setItem(StorageKeys.ADMIN_USER, mockResponse.user);
-          this.adminUserState.set(mockResponse.user);
-          
-          resolve(true);
-        } else {
-          resolve(false);
-        }
-      }, 800);
-    });
+  adminLogin(credentials: LoginCredentials): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(
+      `${environment.apiUrl}${ApiEndpoints.AUTH_LOGIN}`,
+      {
+        email: credentials.username,
+        password: credentials.password
+      }
+    ).pipe(
+      tap(response => {
+        this.storage.setItem(StorageKeys.ADMIN_TOKEN, response.token);
+        this.storage.setItem(StorageKeys.ADMIN_USER, response.user);
+        this.adminUserState.set(response.user);
+      })
+    );
   }
 
   /**
@@ -125,7 +113,7 @@ export class AuthService {
    */
   userLogin(credentials: UserLoginCredentials): Observable<UserLoginResponse> {
     return this.http.post<UserLoginResponse>(
-      `${environment.apiUrl}/api/v1/auth/login`,
+      `${environment.apiUrl}${ApiEndpoints.AUTH_LOGIN}`,
       credentials
     ).pipe(
       tap(response => {

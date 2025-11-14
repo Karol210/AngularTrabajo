@@ -1,5 +1,4 @@
 import { Component, inject, viewChild, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { delay, switchMap, Subject, debounceTime } from 'rxjs';
 import { ButtonModule } from 'primeng/button';
 import { BadgeModule } from 'primeng/badge';
@@ -7,12 +6,10 @@ import { MenuModule } from 'primeng/menu';
 import { OverlayPanel, OverlayPanelModule } from 'primeng/overlaypanel';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { FormsModule } from '@angular/forms';
-import { MenuItem } from 'primeng/api';
 import { CartService } from '../../../core/services/cart.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { AuthModalComponent } from '../auth-modal/auth-modal.component';
 import { CheckoutModalComponent } from '../checkout-modal/checkout-modal.component';
-import { CartItem } from '../../../core/models/product.model';
 
 /**
  * Componente del header principal de la aplicación.
@@ -22,7 +19,6 @@ import { CartItem } from '../../../core/models/product.model';
   selector: 'app-header',
   standalone: true,
   imports: [
-    CommonModule, 
     ButtonModule, 
     BadgeModule, 
     MenuModule, 

@@ -3,6 +3,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, catchError, tap, throwError } from 'rxjs';
 import { Product } from '../models/product.model';
 import { ProductResponse } from '../models/product-response';
+import { ProductRequest } from '../models/product-request';
+import { ProductUpdateRequest } from '../models/product-update-request';
 import { ApiResponse } from '../models/api-response.model';
 import { StorageKeys } from '../enums/storage-keys.enum';
 import { environment } from '../../../environments/environment';
@@ -66,7 +68,9 @@ export class ProductService {
       taxAmount: response.ivaAmount ?? 0,
       totalPrice: response.totalPrice ?? 0,
       imageUrl: response.imageUrl,
-      active: response.active ?? false
+      active: response.active ?? false,
+      estadoProductoId: response.estadoProductoId ?? 0,
+      stock: response.stock ?? 0,
     };
   }
 
@@ -140,6 +144,98 @@ export class ProductService {
    */
   getProductsByCategory(categoryName: string): Product[] {
     return this.productsState().filter(p => p.categoryName === categoryName);
+  }
+
+  /**
+   * Obtiene productos inactivos.
+   * @returns Array de productos con active = false
+   */
+  getInactiveProducts(): Product[] {
+    return this.productsState().filter(p => !p.active);
+  }
+
+  /**
+   * Obtiene productos con stock bajo (menor a 10 unidades).
+   * @param threshold - Umbral de stock bajo (por defecto 10)
+   * @returns Array de productos con stock bajo o sin stock
+   */
+  getLowStockProducts(threshold: number = 10): Product[] {
+    return this.productsState().filter(p => 
+      p.stock !== undefined && p.stock < threshold
+    );
+  }
+
+  /**
+   * Obtiene productos próximos a acabarse o inactivos.
+   * Incluye productos con stock bajo (< 10) y productos inactivos.
+   * @returns Array de productos con problemas de disponibilidad
+   */
+  getProblemsProducts(): Product[] {
+    return this.productsState().filter(p => 
+      !p.active || (p.stock !== undefined && p.stock < 10)
+    );
+  }
+
+  /**
+   * Obtiene productos disponibles y con stock adecuado.
+   * @returns Array de productos activos con stock >= 10 o sin gestión de stock
+   */
+  getAvailableProducts(): Product[] {
+    return this.productsState().filter(p => 
+      p.active && (p.stock === undefined || p.stock >= 10)
+    );
+  }
+
+  /**
+   * Refresca la lista de productos forzando una nueva carga desde el backend.
+   */
+  refreshProducts(): void {
+    this.loadProducts();
+  }
+
+  /**
+   * Crea un nuevo producto en el sistema.
+   * @param request - Datos del producto a crear
+   * @returns Observable con la respuesta del backend
+   */
+  create(request: ProductRequest): Observable<ApiResponse<null>> {
+    return this.http.post<ApiResponse<null>>(
+      `${this.baseUrl}/create`,
+      request,
+      { headers: this.getHeaders() }
+    ).pipe(
+      tap(() => {
+        // Recargar productos después de crear uno nuevo
+        this.refreshProducts();
+      }),
+      catchError(error => {
+        console.error('Error en create:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  /**
+   * Actualiza el estado de un producto existente.
+   * @param id - ID del producto a actualizar
+   * @param request - Datos de actualización (estado del producto)
+   * @returns Observable con la respuesta del backend
+   */
+  update(id: number, request: ProductUpdateRequest): Observable<ApiResponse<null>> {
+    return this.http.put<ApiResponse<null>>(
+      `${this.baseUrl}/update/${id}`,
+      request,
+      { headers: this.getHeaders() }
+    ).pipe(
+      tap(() => {
+        // Recargar productos después de actualizar
+        this.refreshProducts();
+      }),
+      catchError(error => {
+        console.error('Error en update:', error);
+        return throwError(() => error);
+      })
+    );
   }
 }
 

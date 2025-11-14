@@ -11,7 +11,7 @@ import { routes } from './app.routes';
 
 /**
  * Tema personalizado de PrimeNG basado en Aura.
- * Usa la paleta de colores de Davivienda (rojo principal).
+ * Los colores deben coincidir con las variables CSS definidas en styles.scss
  */
 const DaviviendaPreset = definePreset(Aura, {
   semantic: {
@@ -31,16 +31,16 @@ const DaviviendaPreset = definePreset(Aura, {
     colorScheme: {
       light: {
         primary: {
-          color: '#E1111C',
-          contrastColor: '#ffffff',
-          hoverColor: '#B70412',
-          activeColor: '#B70412'
+          color: '{red.500}',         // Equivalente a --red-main
+          contrastColor: '{surface.0}',  // Blanco
+          hoverColor: '{red.700}',       // Equivalente a --red-dark
+          activeColor: '{red.700}'       // Equivalente a --red-dark
         },
         highlight: {
-          background: '#FBE7E8',
-          focusBackground: '#FBE7E8',
-          color: '#B70412',
-          focusColor: '#B70412'
+          background: '{red.50}',       // Equivalente a --red-extralight
+          focusBackground: '{red.50}',
+          color: '{red.700}',           // Equivalente a --red-dark
+          focusColor: '{red.700}'
         }
       }
     }
