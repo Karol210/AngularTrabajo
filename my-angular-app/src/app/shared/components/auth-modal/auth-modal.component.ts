@@ -1,6 +1,7 @@
 import { Component, inject, signal, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { tap } from 'rxjs';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
@@ -10,6 +11,7 @@ import { MessageService } from 'primeng/api';
 import { UserService } from '../../../core/services/user.service';
 import { DocumentTypeService } from '../../../core/services/document-type.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { CartService } from '../../../core/services/cart.service';
 import { RegisterRequest } from '../../../core/models/register.model';
 
 /**
@@ -36,6 +38,7 @@ export class AuthModalComponent {
   private readonly userService = inject(UserService);
   private readonly documentTypeService = inject(DocumentTypeService);
   private readonly authService = inject(AuthService);
+  private readonly cartService = inject(CartService);
   private readonly messageService = inject(MessageService);
 
   /** Signal que controla la visibilidad del modal */
@@ -137,12 +140,19 @@ export class AuthModalComponent {
 
   /**
    * Maneja el submit del formulario de login.
+   * Encadena: login → cargar carrito
    */
   onLoginSubmit(): void {
     if (this.loginForm.valid) {
       this.loading.set(true);
       
-      this.authService.userLogin(this.loginForm.value).subscribe({
+      // Encadenar operaciones en el componente
+      this.authService.userLogin(this.loginForm.value).pipe(
+        tap(() => {
+          // Después del login exitoso, cargar el carrito del usuario
+          this.cartService.refreshCart();
+        })
+      ).subscribe({
         next: (response) => {
           this.loading.set(false);
           this.messageService.add({

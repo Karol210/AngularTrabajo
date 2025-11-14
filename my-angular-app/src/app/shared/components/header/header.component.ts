@@ -82,10 +82,11 @@ export class HeaderComponent implements OnDestroy {
   }
 
   /**
-   * Cierra sesión del usuario.
+   * Cierra sesión del usuario y limpia el carrito.
    */
   logout(): void {
     this.authService.userLogout();
+    this.cartService.clearCart();
   }
 
   /**
